@@ -1,4 +1,4 @@
-const { client } = require("../config/redisConnect")
+const { client } = require("../config/redisConnect") 
 module.exports = async function check(req, res, next) {
     const startTime = Date.now();
     const { phone_number } = req.body;
@@ -8,7 +8,7 @@ module.exports = async function check(req, res, next) {
         const timeTaken = endTime - startTime;
         res.status(200).json({
             response: true,
-            user: user,
+            user: JSON.parse(user),
             timeTaken: `${timeTaken}ms`,
         });
     } else {

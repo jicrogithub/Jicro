@@ -17,7 +17,7 @@ const auth_user = async (req, res) => {
         await user.save();
         await client.set(`${phone_number}`, JSON.stringify(user)).then((reply) => {
             if (!reply) {
-                const endTime = Date.now();
+                const endTime = Date.now();  
                 const timeTaken = endTime - startTime;
                 res.status(400).json({
                     response: false,
@@ -32,7 +32,7 @@ const auth_user = async (req, res) => {
                     response: true,
                     user: user,
                     timeTaken: `${timeTaken}ms`,
-                    redis:reply
+                    redis:reply,
                 });
             }
         });
@@ -45,7 +45,7 @@ const auth_user = async (req, res) => {
 };
 
 const auth_serviceProvider = async () => {
-    try {
+     try {
         const startTime = Date.now();
         const { phone_number, name, profession, lat, long, logo, banner } = req.body;
         const user = new ServiceProvider({

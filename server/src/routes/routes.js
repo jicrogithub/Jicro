@@ -8,7 +8,7 @@ const check = require("../middlewares/auth.middleman")
 /**
 * @Method POST
 * @Route /auth-user
-* @FOR USER's
+* @FOR User's
 */
 route.post("/auth-user",check,auth_user)
 /** 
@@ -17,5 +17,14 @@ route.post("/auth-user",check,auth_user)
 * @FOR ServiceProvider's
 */
 route.post("/auth-service-provider",check,auth_serviceProvider)
+
+// Misc's
+const upload = require("../controllers/misc.controller")
+/**
+ * @METHOD POST
+ * @Route /upload
+ * @FOR ServiceProvider's && User's
+ */
+route.post("/upload",upload)
 
 module.exports = route
