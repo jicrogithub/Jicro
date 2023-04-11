@@ -10,14 +10,7 @@ const serviceProviderSchema = mongoose.Schema({
         required: true
     },
     location: {
-        long: {
-            type: Number,
-            required: true
-        },
-        lat: {
-            type: Number,
-            required: true
-        }
+        address_formated:String
     },
     services:[
         {
@@ -66,6 +59,10 @@ const serviceProviderSchema = mongoose.Schema({
     token:{
         type:String,
         required:true
+    },
+    proof:{
+        type:String,
+        // required:true
     }
 })
 

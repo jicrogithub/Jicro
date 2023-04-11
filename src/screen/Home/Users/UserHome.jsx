@@ -32,12 +32,10 @@ const UserHome = ({ navigation }) => {
                 <Crousel />
                 <Text className="ml-2 text-gray-700 font-black text-xl" >Trending</Text>
                 <Trending navigation={navigation} />
-                {/* <Crousel /> */}
                 <Text className="ml-2 text-gray-700 font-black text-xl" >Suggested</Text>
                 <Tabs />
                 <Suggested navigation={navigation} />
             </ScrollView>
-            {/* <Text>Heelo</Text> */}
         </>
     )
 }

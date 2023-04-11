@@ -8,6 +8,17 @@ const OnBoarding = ({navigation}) => {
   return (
     <View className="flex-1 bg-black" >
       <Onboarding
+      bottomBarColor={"#ececec"}
+      showPagination={true}
+      showSkip={false}
+      titleStyles={{
+        color:main.primary,
+        fontWeight:900
+      }}
+      subTitleStyles={{
+        fontSize:14,
+        fontWeight:300
+      }}
   pages={[
     {
       backgroundColor: main.bgColor,

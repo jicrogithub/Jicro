@@ -1,8 +1,52 @@
-import { View, Text, Image, TouchableOpacity } from 'react-native'
-import React from 'react'
+import { View, Text, Image, TouchableOpacity, Linking } from 'react-native'
+import React, { useState } from 'react'
 import { main } from "../../utils/colors"
 import Seperator from "./components/Seperator"
-const Auth = ({navigation}) => {
+import WhatsApp from './components/WhatsApp';
+import { useAuth } from '../../suppliers/BackendInteractions/Auth';
+import { useEffect } from 'react';
+import { requestLocationPermission } from '../../helper/Location';
+import { getCurrentPostiton, getCurrentLocation } from './../../helper/Location';
+import { key } from '../../constants/API_KEYS';
+import axios from 'axios';
+const Auth = ({ navigation }) => {
+  const [whichScreen,setWhichScreen] = useState("")
+  const { verifyUser,shouldNavigate } = useAuth()
+  useEffect(() => {
+    const linkingEvent = Linking.addEventListener('url', handleDeepLink);
+    Linking.getInitialURL().then(url => {
+      if (url) {
+        handleDeepLink({ url });
+      }
+    });
+    return () => {
+      linkingEvent.remove();
+    };
+  }, [handleDeepLink]);
+  const handleDeepLink = async url => {
+    const regExp = /waId=([\w-]+)/;
+    const match = url.url.match(regExp);
+    // console.log("yhi mkc bsdk ")
+    if (match && whichScreen === "Auth") {
+      const waId = match[1];
+      const address = await getCurrentLocation()
+      // console.log(res)
+      verifyUser(waId,{
+        address
+      });
+    } else {
+      console.log("waId parameter not found in URL");
+    }
+  };
+  useEffect(() => {
+    setWhichScreen("Auth")
+    requestLocationPermission()
+  }, [])
+  // useEffect(()=>{
+  //   if(shouldNavigate === true){
+  //     navigation.replace("UserNavigation")
+  //   }
+  // },[shouldNavigate])
   return (
     <View className="h-screen" >
       <View className="w-full h-[60%] bg-[#684DE9] flex justify-center items-center" >
@@ -12,15 +56,16 @@ const Auth = ({navigation}) => {
         <Text className="text-[#684DE9] font-black text-6xl text-center" >Welcome</Text>
         <Text className="text-gray-600 font-black text-lg text-center">How is Your Day Today?</Text>
         <Seperator text="Log in or Sign up" />
-        <TouchableOpacity onPress={()=>{
-          navigation.navigate("UserHome")
+        <TouchableOpacity onPress={() => {
+          // navigation.navigate('UserNavigation')         
         }} activeOpacity={0.5} style={{
           backgroundColor: main.primary
         }} className={`w-full h-12 rounded-xl mt-1 flex justify-center items-center`} >
-          <Text className="text-white font-bold text-xl" >Continue with WhatsApp</Text>
+          {/* <Text className="text-white font-bold text-xl" >Continue with WhatsApp</Text> */}
+          <WhatsApp />
         </TouchableOpacity>
         <Seperator text="*" />
-        <TouchableOpacity onPress={()=>{
+        <TouchableOpacity onPress={() => {
           navigation.navigate("_Profile")
         }} activeOpacity={0.5} style={{
           backgroundColor: main.bgColor

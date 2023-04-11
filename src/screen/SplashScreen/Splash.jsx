@@ -1,7 +1,8 @@
 import { View, Text, Image, Animated } from 'react-native';
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { getData } from '../../helper/LocalStorage';
 import { main } from '../../utils/colors';
+import OnBoarding from './../OnBoarding/OnBoarding';
 
 const LETTER_BOUNCE_DURATION = 700;
 
@@ -36,11 +37,13 @@ const BouncingText = ({ text, delay, onComplete }) => {
           style={{
             fontWeight: '900',
             fontSize: 130,
-            color:"#fff",
-            transform: [{ translateY: animatedValues[index].interpolate({
-              inputRange: [0, 1],
-              outputRange: [0, -25],
-            }) }],
+            color: "#fff",
+            transform: [{
+              translateY: animatedValues[index].interpolate({
+                inputRange: [0, 1],
+                outputRange: [0, -25],
+              })
+            }],
           }}
         >
           {letter}
@@ -54,12 +57,23 @@ const Splash = ({ navigation }) => {
   const underlineValue = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
-    getData('onBoarding').then((e) => {
-      setTimeout(() => {
-        navigation.navigate(e === 'true' ? 'Auth' : 'OnBoarding');
-      }, 4000);
-    });
+    getDataFromAsyncStorage();
   }, []);
+
+  const getDataFromAsyncStorage = () => {
+    setTimeout(async () => {
+      const onBoarding = await getData('onBoarding');
+      const auth = await getData('auth');
+      if (onBoarding && auth === "true") {
+        navigation.navigate("UserNavigation")
+      } else if (onBoarding === "true") {
+        navigation.navigate("Auth")
+      }else{
+        navigation.navigate("OnBoarding")
+      }
+    }, 4000)
+  };
+
 
   const onBounceComplete = () => {
     Animated.timing(underlineValue, {

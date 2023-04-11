@@ -10,13 +10,9 @@ const userSchema = mongoose.Schema({
         required: true
     },
     location: {
-        long: {
-            type: Number,
-            required: true
-        },
-        lat: {
-            type: Number,
-            required: true
+        address_formated:{
+            type:String,
+            required:true
         }
     },
     orders:[
