@@ -10,7 +10,7 @@ module.exports = function(grunt) {
           
         },
         start_backend: {
-          command: 'cd ../server && npx nodemon index.js',
+          command: 'cd ./server && npx nodemon index.js',
           options: {
             async: true
           }
@@ -23,4 +23,3 @@ module.exports = function(grunt) {
     grunt.registerTask('default', ['shell:start_redis', 'shell:start_backend']);
   
   };
-  

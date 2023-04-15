@@ -33,12 +33,10 @@ const serviceProviderSchema = mongoose.Schema({
     bank:{
         account_number:{
             type:String,
-            required:true,
             default:""
         },
         ifsc_code:{
             type:String,
-            required:true,
             default:""
         }
     },
@@ -62,7 +60,6 @@ const serviceProviderSchema = mongoose.Schema({
     },
     proof:{
         type:String,
-        // required:true
     }
 })
 

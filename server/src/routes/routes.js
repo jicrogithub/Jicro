@@ -16,7 +16,7 @@ route.post("/auth-user",check,auth_user)
 * @Route /auth-service-provider
 * @FOR ServiceProvider's
 */
-route.post("/auth-service-provider",check,auth_serviceProvider)
+route.post("/auth-service-provider",auth_serviceProvider)
 
 // Misc's
 const upload = require("../controllers/misc.controller")

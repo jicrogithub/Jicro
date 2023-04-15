@@ -63,12 +63,15 @@ const Splash = ({ navigation }) => {
   const getDataFromAsyncStorage = () => {
     setTimeout(async () => {
       const onBoarding = await getData('onBoarding');
-      const auth = await getData('auth');
-      if (onBoarding && auth === "true") {
+      const authUser = await getData('auth-user');
+      const authServiceProvider = await getData('auth-service-provider');
+      if (onBoarding && authUser === "true") {
         navigation.navigate("UserNavigation")
-      } else if (onBoarding === "true") {
+      } else if (onBoarding === "true" && authServiceProvider === "true" ) {
+        navigation.navigate("ServiceProviderNavigation")
+      }else if(onBoarding === "true"){
         navigation.navigate("Auth")
-      }else{
+      }else {
         navigation.navigate("OnBoarding")
       }
     }, 4000)

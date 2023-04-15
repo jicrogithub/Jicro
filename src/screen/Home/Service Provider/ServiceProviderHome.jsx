@@ -17,30 +17,18 @@ const ServiceProviderHome = () => {
     //   <Text className="text-md text-gray-500 font-black" >If an Urgent Contact Us at +919905833824 </Text>
     // </View>
     <>
-    <Text className={`text-[${main.primary}] text-6xl font-black text-center bg-white pt-2`} >Jicro</Text>
+      <Text className={`text-[${main.primary}] text-6xl font-black text-center bg-white pt-2`} >Jicro</Text>
       {/* <BottomTabsServicesProvider/> */}
       <ScrollView
-        className="h-screen bg-white p-2 w-full"
+        className="h-full bg-white pb-3 w-full"
         refreshControl={
-          <RefreshControl colors={[main.primary]} refreshing={refreshing} onRefresh={onRefresh} />
+          <RefreshControl colors={[main.primary]} refreshing={refreshing}  onRefresh={onRefresh} />
         }
       >
-      <Card/>
-      <Card/>
-      <Card/>
-      <Card/>
-      <Card/>
-      <Card/>
-      <Card/>
-      <Card/>
-      <Card/>
-      <Card/>
-      <Card/>
-      <Card/>
-      <Card/>
-      <Card/>
-      <Card/>
-      <Card/>
+        <Card />
+        <Card />
+        <Card />
+        <Card />
       </ScrollView>
     </>
   )

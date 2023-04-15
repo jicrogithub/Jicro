@@ -2,13 +2,14 @@ import { View, Text, TouchableOpacity,Image } from 'react-native'
 import React, { useRef } from 'react'
 import { main } from "../../../../utils/colors"
 import Button from './../../../components/Button';
+import locationGIF from "C:\Users\siddh\Desktop\Business\Jicro\src\screen\Home\Service Provider\assets\location.gif"
 import RBSheet from "react-native-raw-bottom-sheet";
 const Card = () => {
+    // console.log(locationGIF)
     const refRBSheet = useRef();
     return (
-        <>
-
-            <View style={main.shadows} className="bg-white rounded-xl mx-1 w-50 h-44 my-2 flex flex-row justify-between mb-2" >
+        <View className="my-2" >
+            <View style={main.shadows} className="bg-white rounded-xl mx-1 w-50 h-44 flex flex-row justify-between" >
                 <View className="w-[80%]  h-full rounded-l-xl flex flex-col px-3 py-2 gap-2" >
                     <Text className="font-bold text-[16px] mb-[-20px] text-gray-600 text-center" >Tap Fitting with Free Washer...</Text>
                     <View className="flex flex-row gap-4 justify-center items-center" >
@@ -26,7 +27,7 @@ const Card = () => {
                         </View>
                         <View className="w-28 h-10 bg-gray-200 rounded-xl flex flex-row justify-center items-center" >
                             <View className="rounded-full w-7 h-7  bg-neutral-800 flex justify-center items-center mr-2" >
-                                {/* <Image className=""  source={require("..\assets\location.gif")} /> */}
+                                <Image className=""  source={locationGIF} />
                             </View>
                             <Text className="text-zinc-800 font-black text-lg" >1KM</Text>
                         </View>
@@ -57,7 +58,7 @@ const Card = () => {
                 <Text className="text-black" >Yeh abhi bna nhi h lode</Text>
                 {/* <YourOwnComponent /> */}
             </RBSheet>
-        </>
+        </View>
     )
 }
 

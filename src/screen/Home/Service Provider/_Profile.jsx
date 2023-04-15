@@ -1,5 +1,5 @@
 import { View, Text, TextInput, TouchableOpacity, ScrollView, Image, Linking } from 'react-native'
-import React, { useEffect, useRef, useState, useCallback } from 'react'
+import React, { useEffect, useRef, useState, useCallback, useMemo } from 'react'
 import { main } from '../../../utils/colors'
 import MapView, { Marker, } from 'react-native-maps';
 import SelectDropdown from 'react-native-select-dropdown'
@@ -14,9 +14,9 @@ import { useAuth } from '../../../suppliers/BackendInteractions/Auth';
 import { useLoading } from '../../../suppliers/StateManagement/Loading';
 const prof = ["Electrician", "Plumbing", "Carpentering", "House Cleaning", "Cooking", "Gardener", "Home organizer", "Painter", "Personal trainer", "Massage therapist", "Hair stylist or barber", "Technician", "Mobile car wash and Fixing."];
 const _Profile = ({ navigation }) => {
+  const { verifyServiceProvider,shouldNavigateServiceProvider } = useAuth()
   const { setLoading } = useLoading()
   const [buttonText, setButtonText] = useState("")
-  const { verifyServiceProvider } = useAuth()
   const { upload, uri, imageFor } = useUpload();
   const [address, setAddress] = useState("")
   const [profession, setProfession] = useState("")
@@ -27,6 +27,9 @@ const _Profile = ({ navigation }) => {
     logo: "",
     proof: ""
   })
+  useEffect(()=>{
+    shouldNavigateServiceProvider && navigation.replace("ServiceProviderNavigation")
+  },[shouldNavigateServiceProvider])
   useEffect(() => {
     const linkingEvent = Linking.addEventListener('url', handleDeepLink);
     Linking.getInitialURL().then(url => {
@@ -38,7 +41,7 @@ const _Profile = ({ navigation }) => {
       linkingEvent.remove();
     };
   }, [handleDeepLink]);
-  const handleDeepLink = async url => {
+  const handleDeepLink = useCallback(async url => {
     const regExp = /waId=([\w-]+)/;
     const match = url.url.match(regExp);
     if (match) {
@@ -46,17 +49,16 @@ const _Profile = ({ navigation }) => {
       setButtonText("Phone Number Added")
       const waID = match[1];
       setWaId(waID)
-      console.log(waID)
     } else {
       alert("Something went Wrong");
     }
-  }
+  },[])
   const refRBSheet = useRef();
   const mapRef = useRef(null);
-  const handleRegionChange = (newCords) => {
+  const handleRegionChange = useCallback((newCords) => {
     setCords(newCords);
     mapRef?.current?.animateToRegion(newCords, 3000);
-  };
+  },[])
   const [cords, setCords] = useState({
     latitude: 0,
     longitude: 0,
@@ -66,7 +68,9 @@ const _Profile = ({ navigation }) => {
 
   useEffect(() => {
     getLiveLocation()
+    console.log("Hello")
   }, []);
+  
   const getLiveLocation = async () => {
     const location = await requestLocationPermission()
     if (location === "granted") {
@@ -74,7 +78,7 @@ const _Profile = ({ navigation }) => {
       handleRegionChange({
         latitude: response.latitude,
         longitude: response.longitude,
-        latitudeDelta: 0.002,
+        latitudeDelta: 0.0002,
         longitudeDelta: 0.000001
       });
     }
@@ -102,10 +106,13 @@ const _Profile = ({ navigation }) => {
             }} />) : (
               <TouchableOpacity onPress={() => {
                 launchImageLibrary({ noData: true }, (response) => {
-                  if (response) {
+                  if (response.assets) {
                     setImage({ ...image, banner: response.assets[0].uri })
                     upload(response.assets[0], "banner")
                     imageFor === "banner" && setImage({ ...image, banner: uri })
+                  }
+                  if(response.didCancel){
+                    setImage({ ...image, banner: "" })
                   }
                 });
               }} className="w-full h-44 bg-gray-600 rounded-2xl" >
@@ -115,17 +122,22 @@ const _Profile = ({ navigation }) => {
           }
           <View className="w-full mt-[-70px] h-32 flex justify-center items-center" >
             {
-              image.logo !== "" ? (<Image className={`w-32 h-32 rounded-full border-white border-8`} source={{
+              image.logo !== "" ? (<View className="rounded-full  border-white border-8" >
+                <Image className={`w-32 h-32 rounded-full`} source={{
                 uri: image.logo
-              }} />) : (
+              }} />
+              </View>) : (
                 <TouchableOpacity onPress={() => {
                   launchImageLibrary({ noData: true }, (response) => {
                     // console.log(response);
-                    if (response) {
+                    if (response.assets) {
                       setImage({ ...image, logo: response.assets[0].uri })
                       upload(response.assets[0], "logo")
                       imageFor === "logo" && setImage({ ...image, logo: uri })
                     }
+                    if(response.didCancel){
+                    setImage({ ...image, logo: "" })
+                  }
                   });
                 }} className="w-32 h-32 rounded-full bg-gray-400 border-white border-8 flex justify-center items-center " >
                   <Text className="text-xl text-white font-black" >Logo</Text>
@@ -135,7 +147,7 @@ const _Profile = ({ navigation }) => {
           </View>
           <View className="p-2" >
             <TextInput
-              keyboardType="number-pad"
+              keyboardType="default"
               cursorColor={'#1c1c1c'}
               className=" rounded-xl h-12 text-black font-bold text-md px-2 mb-2 border-2 border-gray-300"
               placeholder="Name of Service Provider/Shop"
@@ -158,15 +170,15 @@ const _Profile = ({ navigation }) => {
               className="w-full"
               defaultButtonText="Select a Profession"
               onSelect={(selectedItem, index) => {
-                console.log(selectedItem, index)
-              }}
-              buttonTextAfterSelection={(selectedItem, index) => {
+                console.log(selectedItem)
                 setProfession(selectedItem)
+              }}
+              buttonTextAfterSelection={useMemo((selectedItem, index) => {
                 return selectedItem
-              }}
-              rowTextForSelection={(item, index) => {
+              },[])}
+              rowTextForSelection={useMemo((item, index) => {
                 return item
-              }}
+              },[])}
               dropdownStyle={{
                 borderRadius: 5,
                 borderBottomColor: main.primary
@@ -191,19 +203,20 @@ const _Profile = ({ navigation }) => {
               }} />) : (
                 <TouchableOpacity onPress={() => {
                   launchImageLibrary({ noData: true }, (response) => {
-                    // console.log(response);
-                    if (response) {
+                    if (response.assets) {
                       setImage({ ...image, proof: response.assets[0].uri })
                       upload(response.assets[0], "proof")
                       imageFor === "proof" && setImage({ ...image, proof: uri })
                     }
+                    if(response.didCancel){
+                    setImage({ ...image, proof: "" })
+                  }
                   });
                 }} className="w-full h-44 bg-slate-400 rounded-2xl" >
                 </TouchableOpacity>
               )
             }
             <Button func={() => {
-              console.log(waId, image.banner, image.logo, image.proof, address, name, profession)
               if ((waId !== "" && image.banner !== "" && image.logo !== "" && image.proof !== "" && address !== "" && name !== "" && profession !== "")) {
                 verifyServiceProvider(waId,
                   {
@@ -247,7 +260,6 @@ const _Profile = ({ navigation }) => {
         <GooglePlacesInput setAddress={setAddress} setCords={setCords} onChange={handleRegionChange} />
         <Button func={async ()=>{
           const address = await getCurrentLocation()
-          console.log(address)
           setAddress(address)
           refRBSheet.current.close()
         }} text="Add Your Current Location" />

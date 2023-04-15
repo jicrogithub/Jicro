@@ -4,7 +4,8 @@ const url = "http://192.168.50.205:8080"
 import { setData } from "../../helper/LocalStorage"
 const useAuth = create(
     (set) => ({
-        shouldNavigate: false,
+        shouldNavigateUser: false,
+        shouldNavigateServiceProvider: false,
         verifyUser: async (waId,data) => {
                 await axios.post(`${url}/auth-user`, {
                     waId,
@@ -12,16 +13,16 @@ const useAuth = create(
                 }).then((e) => {
                     console.log(e.data)
                     setData("token", e.data.user.token)
-                    setData("auth", "true")
+                    setData("auth-user", "true")
                     set(() => ({
-                        shouldNavigate: true
+                        shouldNavigateUser: true
                     }))
                 }).catch((e) => {
                     console.log(e)
                 })
         },
         verifyServiceProvider: async (waId,data) => {
-            console.log(data)
+            
             await axios.post(`${url}/auth-service-provider`, {
                 waId,
                 address: data.address,
@@ -31,12 +32,12 @@ const useAuth = create(
                 banner: data.banner,
                 proof: data.proof
             }).then((e) => {
-                console.log(e)
-                // setData("token", e.data.token)
-                // setData("auth", "true")
-                // set(() => ({
-                //     shouldNavigate: true
-                // }))
+                console.log(e.data)
+                setData("token", e.data.user.token)
+                setData("auth-service-provider", "true")
+                set(() => ({
+                    shouldNavigateServiceProvider: true
+                }))
             }).catch((e) => {
                 console.log(e)
             })

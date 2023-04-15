@@ -14,13 +14,13 @@ const auth_user = async (req, res) => {
                 'Content-Type': 'application/json',
             },
         };
-        
+
         await axios.post('https://jicro.authlink.me', {
             waId
         }, config)
             .then(async (e) => {
                 const user = new User({
-                    phone_number:e.data.data.userMobile, name:e.data.data.userName, location: {
+                    phone_number: e.data.data.userMobile, name: e.data.data.userName, location: {
                         address_formated: address
                     }
                 });
@@ -63,43 +63,69 @@ const auth_user = async (req, res) => {
     }
 };
 
-const auth_serviceProvider = async () => {
+const auth_serviceProvider = async (req, res) => {
     try {
         const startTime = Date.now();
-        const { phone_number, name, profession, address, logo, banner,proof } = req.body;
-        const user = new ServiceProvider({
-            phone_number, name, location: {
-                address
+        const { waId, name, profession, address, logo, banner, proof } = req.body;
+        const config = {
+            headers: {
+                'clientId': 'lytvflbj',
+                'clientSecret': 'eepo0q116dir3603',
+                'Content-Type': 'application/json',
             },
-            profession,
-            logo,
-            banner,
-            proof
-        });
-        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: "30d" });
-        user.token = token;
-        await client.set(`${phone_number}`, JSON.stringify(user)).then((reply) => {
-            if (!reply) {
-                const endTime = Date.now();
-                const timeTaken = endTime - startTime;
-                res.status(400).json({
-                    response: false,
-                    user: user,
-                    timeTaken: `${timeTaken}ms`,
-                    redis: reply
-                });
-            } else {
+        };
+
+        await axios.post('https://jicro.authlink.me', {
+            waId
+        }, config).then(async (e) => {
+            const SP = await ServiceProvider.findOne({ phone_number: e.data.data.userMobile });
+            if (SP) {
                 const endTime = Date.now();
                 const timeTaken = endTime - startTime;
                 res.status(200).json({
                     response: true,
-                    user: user,
+                    user: SP,
                     timeTaken: `${timeTaken}ms`,
-                    redis: reply
+                });
+            } else {
+                const serviceProvider = new ServiceProvider({
+                    phone_number: e.data.data.userMobile, name, location: {
+                        address
+                    },
+                    profession,
+                    logo,
+                    banner,
+                    proof
+                });
+                const token = jwt.sign({ id: serviceProvider._id }, process.env.JWT_SECRET, { expiresIn: "30d" });
+                serviceProvider.token = token;
+                await serviceProvider.save()
+                await client.set(`${e.data.data.userMobile}`, JSON.stringify(serviceProvider)).then((reply) => {
+                    console.log(reply)
+                    if (!reply) {
+                        const endTime = Date.now();
+                        const timeTaken = endTime - startTime;
+                        res.status(400).json({
+                            response: false,
+                            user: serviceProvider,
+                            timeTaken: `${timeTaken}ms`,
+                            redis: reply
+                        });
+                    } else {
+                        const endTime = Date.now();
+                        const timeTaken = endTime - startTime;
+                        res.status(200).json({
+                            response: true,
+                            user: serviceProvider,
+                            timeTaken: `${timeTaken}ms`,
+                            redis: reply
+                        });
+                    }
                 });
             }
-        });
+        })
     } catch (error) {
+        console.log(error)
         res.status(400).json({
             response: false,
             error: error.message,

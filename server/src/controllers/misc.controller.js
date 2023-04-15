@@ -9,7 +9,6 @@ cloudinary.config({
 const upload = async(req,res)=>{
         const files = req.files.img
         await cloudinary.uploader.upload(files.tempFilePath, async (err, result) => {
-            console.log(result,err)
             res.send({
                 result:result.url
             })

@@ -42,8 +42,8 @@ import List from './src/screen/Home/Users/List.jsx';
 *  @Home ~ Service Provider
 */
 
-import ServiceProviderHome from './src/screen/Home/Service Provider/ServiceProviderHome.jsx';
 import _Profile from './src/screen/Home/Service Provider/_Profile';
+import Profile from './src/screen/Home/Service Provider/Profile';
 
 const Stack = createNativeStackNavigator();
 
@@ -82,15 +82,18 @@ export default function App() {
         {/**
         *  @Screens ~ Service_Provider
       */}
-        <Stack.Screen name="ServiceProviderHome"
+        <Stack.Screen name="ServiceProviderNavigation"
           options={{ headerShown: false, }}
-          component={ServiceProviderHome} />
+          component={ServiceProvidernavigation} />
         <Stack.Screen name="ServiceProvidernavigation"
           options={{ headerShown: false, }}
           component={ServiceProvidernavigation} />
         <Stack.Screen name="_Profile"
           options={{ headerShown: false, }}
           component={_Profile} />
+        <Stack.Screen name="Profile"
+          options={{ headerShown: false, }}
+          component={Profile} />
       </Stack.Navigator>
     </NavigationContainer>
   );
