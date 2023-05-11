@@ -1,0 +1,34 @@
+______________________________
+Splash,
+OnBoarding,
+Auth,
+User: 
+    - Home
+    - Bookings
+    - Demand a Service
+    - Details
+    - Search [-]
+    - Confirmation
+    - Tracking
+    - TrendingExtended,
+Service Provider: 
+    - Profile Creaction
+    - Add Service
+    - Profile
+    - Preview
+    - Map - Service Provider
+    - Wallet
+______________________________
+
+______________________________
+User:
+    - Filter [-] [*]
+    - Search [-]
+    - Creative Design [*]
+	-> Graphics
+	-> Interactive Cards
+Service Provider:
+    - Edit Profile ( Name, Banner, Logo ) [-]
+    - Edit Added Service[-]
+    - Completing Service 
+    - Showing Phone Number And Address

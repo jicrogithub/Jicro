@@ -1,18 +1,46 @@
-import React, { useState, useEffect } from 'react';
-import { View, TouchableWithoutFeedback, TextInput, Image, Keyboard, Animated, Easing, Text } from 'react-native';
+import React, { useState, useEffect, useRef, useCallback,memo } from 'react';
+import { View, TouchableWithoutFeedback, TextInput, Image, Keyboard, Animated, Easing, Text, TouchableOpacity } from 'react-native';
 import { main } from "../../../../utils/colors";
-
-const Header = () => {
+import MapView, { Marker } from 'react-native-maps';
+import GooglePlacesInput from './../../ServiceProvider/components/GooglePlacesAutocomplete';
+import RBSheet from 'react-native-raw-bottom-sheet';
+import Button from './../../../components/Button';
+import { requestLocationPermission, getCurrentPostiton } from '../../../../helper/Location';
+import { useNavigation } from '@react-navigation/native';
+const Header = ({ func }) => {
+  const navigation = useNavigation()
   const [inputSelected, setInputSelected] = useState(false);
   const [placeholderIndex, setPlaceholderIndex] = useState(0);
   const [animatedValue] = useState(new Animated.Value(0));
   const [fadeValue] = useState(new Animated.Value(1));
-  const placeholders = ['Search for plumbers, carpenters, beautician', 'Try "Bulb Fixing 💡" or "Door bell Not.. 🛎"', 'Find Services in Just one Click', 'Search "Cupboard Cleaning"',"Try 'Jhadu Pocha' or 'khana Bna de'","I want to take Massage 😣"];
-
+  const placeholders = ['Search for plumbers, carpenters, beautician', 'Try "Bulb Fixing 💡" or "Door bell Not.. 🛎"', 'Find Services in Just one Click', 'Search "Cupboard Cleaning"', "Try 'Jhadu Pocha' or 'khana Bna de'", "I want to take Massage 😣"];
+  const refRBSheet = useRef()
+  const mapRef = useRef()
+  const [cords, setCords] = useState({
+    latitude: 0,
+    longitude: 0,
+    latitudeDelta: 0,
+    longitudeDelta: 0,
+  })
+  const handleRegionChange = useCallback((newCords) => {
+    setCords(newCords);
+    mapRef?.current?.animateToRegion(newCords, 3000);
+  }, [])
+  const getLiveLocation = async () => {
+    const location = await requestLocationPermission()
+    if (location === "granted") {
+      const response = await getCurrentPostiton()
+      handleRegionChange({
+        latitude: response.latitude,
+        longitude: response.longitude,
+        latitudeDelta: 0.0002,
+        longitudeDelta: 0.000001
+      });
+    }
+  }
   const dismissKeyboard = () => {
     Keyboard.dismiss();
   };
-  console.log(placeholderIndex)
   const animatePlaceholder = () => {
     Animated.parallel([
       Animated.timing(animatedValue, {
@@ -53,18 +81,28 @@ const Header = () => {
 
   return (
     <TouchableWithoutFeedback onPress={dismissKeyboard}>
-      <View className="bg-[#684DE9] w-full h-32 rounded-b-3xl p-3 flex" >
+      <View className="bg-[#684DE9] w-full h-32 rounded-b-3xl p-2 flex" >
         <View className="flex flex-row items-center gap-2 mb-3" >
           <Image source={require('../assets/location.png')} className="w-8 h-8" />
-          <View>
-            <Text className="text-white text-2xl font-bold">Jaganpura</Text>
-            <Text className="text-white text-md font-bold">East Lakshmi Nagar, Patna</Text>
+          <View className="" >
+            <Text className="text-white text-2xl font-black">Jaganpura</Text>
+            <View className="flex flex-row items-center " >
+              <Text className="text-white text-md font-semibold">East Lakshmi Nagar, Patna</Text>
+              <TouchableOpacity onPress={async () => {
+                refRBSheet.current.open()
+                await getLiveLocation()
+              }} >
+                <Image className="h-6 w-6" source={require("../assets/drop_down.png")} />
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
-        <View className="h-10 w-full rounded-2xl bg-gray-100 flex flex-row items-center">
+        <TouchableOpacity onPress={()=>{
+          navigation.navigate('Search')
+        }} activeOpacity={0.7} className="h-10 w-full rounded-2xl bg-gray-100 flex flex-row items-center">
           <Image source={require('../assets/search.png')} className="w-5 h-5 mx-3" />
           <Animated.Text
-          className="text-gray-600 font-bold"
+            className="text-gray-600 font-bold"
             style={{
               transform: [{ translateY: placeholderTranslateY }],
               opacity: placeholderOpacity,
@@ -72,8 +110,54 @@ const Header = () => {
             }}>
             {placeholders[placeholderIndex]}
           </Animated.Text>
-          <TextInput className="h-full flex-1" style={{ fontSize: 16 }} />
-        </View>
+          {/* <TextInput className="h-full flex-1" style={{ fontSize: 16 }} /> */}
+        </TouchableOpacity>
+        <RBSheet
+          height={600}
+          dragFromTopOnly={true}
+          animationType={'slide'}
+          ref={refRBSheet}
+          closeOnDragDown={true}
+          closeOnPressMask={true}
+          customStyles={{
+            wrapper: {
+              backgroundColor: "transparent"
+            },
+            draggableIcon: {
+              backgroundColor: "#fff",
+              width: 70
+            },
+            container: {
+              backgroundColor: "#202020",
+              paddingLeft: 10,
+              paddingRight: 10,
+              borderRadius: 20
+            }
+          }}
+        >
+          <GooglePlacesInput setCords={setCords} onChange={handleRegionChange} />
+          <Button func={async () => {
+            const address = await getCurrentLocation()
+            // setAddress(address)
+            refRBSheet.current.close()
+          }} text="Add Your Current Location" />
+          <MapView
+            ref={mapRef}
+            loadingBackgroundColor='#000'
+            loadingEnabled={true}
+            loadingIndicatorColor={main.primary}
+            style={{
+              flex: 1,
+              marginTop: 5,
+              borderRadius: 10
+            }}
+            initialRegion={cords}
+          >
+            <Marker
+              coordinate={cords}
+            />
+          </MapView>
+        </RBSheet>
       </View>
     </TouchableWithoutFeedback>
   );

@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import axios from "axios"
-const url = "http://192.168.50.205:8080"
+import IP from '../../constants/IP';
+const url = IP.local
 const useUpload = create(
     (set) => ({
         uri: "",
@@ -19,16 +20,15 @@ const useUpload = create(
                         'Content-Type': 'multipart/form-data',
                     }
                 }).then((e) => {
-                    // console.log(e.data)
                     set(()=>({
                         uri:e.data.result,
                         imageFor:imageFor
                     }))
                 }).catch((e) => {
-                    console.log(e)
+                    
                 })
             } catch (e) {
-                console.log(e)
+                
             }
         },
     }));

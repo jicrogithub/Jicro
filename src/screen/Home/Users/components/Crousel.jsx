@@ -1,6 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef,memo } from 'react';
 import { View, ScrollView, Image, Text } from 'react-native';
-
 const images = [
   'https://cdn.pixabay.com/photo/2012/08/27/14/19/mountains-55067__340.png',
   'https://images.unsplash.com/photo-1612441804231-77a36b284856?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8NHx8bW91bnRhaW4lMjBsYW5kc2NhcGV8ZW58MHx8MHx8&w=1000&q=80',
@@ -10,6 +9,7 @@ const images = [
 ];
 
 const Carousel = () => {
+  // 
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const scrollViewRef = useRef(null);
 
@@ -34,6 +34,7 @@ const Carousel = () => {
     <ScrollView
       ref={scrollViewRef}
       horizontal={true}
+      className="mt-2"
       showsHorizontalScrollIndicator={false}
       pagingEnabled={true}
       snapToInterval={imageWidth + imageSpacing}

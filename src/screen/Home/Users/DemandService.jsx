@@ -15,7 +15,7 @@ const DemandService = ({ navigation }) => {
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [date, setDate] = useState(new Date());
   const [show,setShow] = useState(false)
-  console.log(date)
+  
   const handleDateChange = (event, selectedDate) => {
     setShowDatePicker(false);
     if (selectedDate) {

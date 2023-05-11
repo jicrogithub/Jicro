@@ -1,13 +1,14 @@
 import { View, Text, TouchableOpacity } from 'react-native'
-import React from 'react'
+import React,{memo} from 'react'
 import { main } from "../../../../utils/colors";
 import SquareBoxs from './SquareBoxs';
 import Button from './../../../components/Button';
 
-const Trending = ({navigation}) => {
+const Trending = () => {
+  
   return (
     <View style={main.shadows} className="bg-white w-50 h-60 mx-2 my-1 rounded-lg p-2 flex flex-col justify-between" >
-      <SquareBoxs navigation={navigation} data={
+      <SquareBoxs data={
         [
           {
             id:1,
@@ -70,4 +71,4 @@ const Trending = ({navigation}) => {
   )
 }
 
-export default Trending
+export default memo(Trending)

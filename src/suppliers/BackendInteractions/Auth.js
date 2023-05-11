@@ -1,48 +1,74 @@
 import { create } from 'zustand';
+import IP from '../../constants/IP';
 import axios from "axios"
-const url = "http://192.168.50.205:8080"
-import { setData } from "../../helper/LocalStorage"
+import { getData, setData } from "../../helper/LocalStorage"
+const url = IP.local
 const useAuth = create(
     (set) => ({
         shouldNavigateUser: false,
         shouldNavigateServiceProvider: false,
-        verifyUser: async (waId,data) => {
-                await axios.post(`${url}/auth-user`, {
-                    waId,
-                    address: data.address,
-                }).then((e) => {
-                    console.log(e.data)
-                    setData("token", e.data.user.token)
-                    setData("auth-user", "true")
-                    set(() => ({
-                        shouldNavigateUser: true
-                    }))
-                }).catch((e) => {
-                    console.log(e)
-                })
-        },
-        verifyServiceProvider: async (waId,data) => {
-            
-            await axios.post(`${url}/auth-service-provider`, {
+        isError: false,
+        verifyUser: async (waId, data) => {
+            const token = await getData('fcm-token')
+            await axios.post(`${url}/auth-user`, {
                 waId,
                 address: data.address,
-                name: data.name,
-                profession: data.profession,
-                logo: data.logo,
-                banner: data.banner,
-                proof: data.proof
+                lat: data.lat,
+                long: data.long,
+                token
             }).then((e) => {
-                console.log(e.data)
-                setData("token", e.data.user.token)
-                setData("auth-service-provider", "true")
+                console.log(e)
+                setData("token", e.data.token)
+                setData("auth-user", "true")
                 set(() => ({
-                    shouldNavigateServiceProvider: true
+                    shouldNavigateUser: true
                 }))
             }).catch((e) => {
-                console.log(e)
             })
+        },
+        verifyServiceProvider: async (waId, data) => {
+            if (data === undefined) {
+                const token = await getData('fcm-token')
+                await axios.post(`${url}/auth-service-provider`, {
+                    waId,
+                    type: "login",
+                    token
+                }).then((e) => {
+                    setData("token", e.data.token)
+                    setData("auth-service-provider", "true")
+                    set(() => ({
+                        shouldNavigateServiceProvider: true
+                    }))
+                }).catch((e) => {
+                    
+                    set(() => ({
+                        isError: true
+                    }))
+                })
+            } else {
+                const token = await getData('fcm-token')
+                await axios.post(`${url}/auth-service-provider`, {
+                    waId,
+                    address: data.address,
+                    name: data.name,
+                    profession: data.profession,
+                    logo: data.logo,
+                    banner: data.banner,
+                    proof: data.proof,
+                    coords: data.coords,
+                    token
+                }).then((e) => {
+                    setData("token", e.data.token)
+                    setData("auth-service-provider", "true")
+                    set(() => ({
+                        shouldNavigateServiceProvider: true
+                    }))
+                }).catch((e) => {
+                    
+                })
+            }
         }
-}));
+    }));
 
 
 

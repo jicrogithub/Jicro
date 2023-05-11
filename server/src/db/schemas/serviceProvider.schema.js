@@ -1,4 +1,4 @@
-const mongoose = require("mongoose")
+const mongoose = require('mongoose')
 
 const serviceProviderSchema = mongoose.Schema({
     phone_number: {
@@ -10,57 +10,74 @@ const serviceProviderSchema = mongoose.Schema({
         required: true
     },
     location: {
-        address_formated:String
-    },
-    services:[
-        {
-            type:mongoose.Types.ObjectId,
-            ref:"Services"
-        }
-    ],
-    profession:{
-        type:String,
-        required:true
-    },
-    logo:{
-        type:String,
-        default:""
-    },
-    banner:{
-        type:String,
-        default:""
-    },
-    bank:{
-        account_number:{
-            type:String,
-            default:""
+        address_formated: String,
+        coordinates: {
+            type: [Number]
         },
-        ifsc_code:{
-            type:String,
-            default:""
+        type: {
+            type: String,
+            default: 'Point'
         }
     },
-    revenue:{
-        type:Number,
-        default:0
-    },
-    recent_orders:[
-     {
-        type:mongoose.Types.ObjectId,
-        ref:"Orders"   
-     }   
+    services: [
+        {
+            type: mongoose.Types.ObjectId,
+            ref: "Service"
+        }
     ],
-    ratings:{
-        type:Number,
-        default:0.0
+    profession: {
+        type: String,
+        required: true
     },
-    token:{
-        type:String,
-        required:true
+    logo: {
+        type: String,
+        default: ""
     },
-    proof:{
-        type:String,
-    }
+    banner: {
+        type: String,
+        default: ""
+    },
+    bank: {
+        account_number: {
+            type: String,
+            default: ""
+        },
+        ifsc_code: {
+            type: String,
+            default: ""
+        }
+    },
+    wallet: {
+        balance: {
+            type: Number,
+            default: 0
+        },
+        history: [
+            {
+                from: String,
+                amount: Number,
+                balance: Number
+            }
+        ]
+    },
+    orders: [
+        {
+            order: {
+                type: mongoose.Types.ObjectId,
+                ref: "Order"
+            },
+        }
+    ],
+    ratings: {
+        type: Number,
+        default: 0.0
+    },
+    proof: {
+        type: String,
+    },
+    token:String
 })
 
-module.exports = serviceProviderSchema
+serviceProviderSchema.index({ location: '2dsphere' });
+
+module.exports = serviceProviderSchema;

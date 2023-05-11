@@ -3,8 +3,9 @@ import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { getData } from '../../helper/LocalStorage';
 import { main } from '../../utils/colors';
 import OnBoarding from './../OnBoarding/OnBoarding';
+import { useFetch } from '../../suppliers/BackendInteractions/Fetch';
 
-const LETTER_BOUNCE_DURATION = 700;
+const LETTER_BOUNCE_DURATION = 600;
 
 const BouncingText = ({ text, delay, onComplete }) => {
   const animatedValues = useRef(text.split('').map(() => new Animated.Value(0))).current;
@@ -12,7 +13,7 @@ const BouncingText = ({ text, delay, onComplete }) => {
   useEffect(() => {
     const animations = animatedValues.map((animatedValue, index) => {
       return Animated.sequence([
-        Animated.delay(delay + index * 300),
+        Animated.delay(delay + index * 200),
         Animated.timing(animatedValue, {
           toValue: 1,
           duration: LETTER_BOUNCE_DURATION,
@@ -54,37 +55,42 @@ const BouncingText = ({ text, delay, onComplete }) => {
 };
 
 const Splash = ({ navigation }) => {
-  const underlineValue = useRef(new Animated.Value(0)).current;
-
+  const { getSP, getServices, getOrders } = useFetch()
+  const getServicesFromServer = async () => {
+    const authUser = await getData('auth-user');
+    const onBoarding = await getData('onBoarding');
+    if (authUser && onBoarding === 'true') {
+      getServices()
+    }
+  }
+  const getServicesProviderInfoFromServer = async () => {
+    const onBoarding = await getData('onBoarding');
+    const authServiceProvider = await getData('auth-service-provider');
+    if (authServiceProvider && onBoarding === 'true') {
+      getSP();
+      getOrders()
+    }
+  }
   useEffect(() => {
-    getDataFromAsyncStorage();
-  }, []);
-
-  const getDataFromAsyncStorage = () => {
-    setTimeout(async () => {
+    getServicesFromServer()
+    getServicesProviderInfoFromServer()
+  }, [])
+  const onBounceComplete = useCallback(() => {
+    (async () => {
       const onBoarding = await getData('onBoarding');
       const authUser = await getData('auth-user');
       const authServiceProvider = await getData('auth-service-provider');
       if (onBoarding && authUser === "true") {
-        navigation.navigate("UserNavigation")
-      } else if (onBoarding === "true" && authServiceProvider === "true" ) {
-        navigation.navigate("ServiceProviderNavigation")
-      }else if(onBoarding === "true"){
-        navigation.navigate("Auth")
-      }else {
-        navigation.navigate("OnBoarding")
+        navigation.replace("UserNavigation")
+      } else if (onBoarding === "true" && authServiceProvider === "true") {
+        navigation.replace("ServiceProviderNavigation");
+      } else if (onBoarding === "true") {
+        navigation.replace("Auth")
+      } else {
+        navigation.replace("OnBoarding")
       }
-    }, 4000)
-  };
-
-
-  const onBounceComplete = () => {
-    Animated.timing(underlineValue, {
-      toValue: 1,
-      duration: 500,
-      useNativeDriver: true,
-    }).start();
-  };
+    })()
+  })
 
   return (
     <View
@@ -97,23 +103,8 @@ const Splash = ({ navigation }) => {
         alignItems: 'center',
       }}
     >
-      <BouncingText text="Jicro" delay={1000} onComplete={onBounceComplete} />
-      <Animated.View
-        style={{
-          borderBottomColor: '#fff',
-          borderBottomWidth: 5,
-          width: 220,
-          // marginTop: 10,
-          transform: [
-            {
-              scaleX: underlineValue.interpolate({
-                inputRange: [0, 1],
-                outputRange: [0, 1],
-              }),
-            },
-          ],
-        }}
-      />
+      <BouncingText text="Jicro" delay={100} onComplete={onBounceComplete} />
+
     </View>
   );
 };

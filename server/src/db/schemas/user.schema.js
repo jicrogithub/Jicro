@@ -13,25 +13,19 @@ const userSchema = mongoose.Schema({
         address_formated:{
             type:String,
             required:true
+        },
+        coordinates:[Number],
+        type:{
+            type:String,
+            default:'Point'
         }
     },
     orders:[
         {
-            services:{
-                type:mongoose.Types.ObjectId,
-                ref:"Service"
+            order: {
+                type: mongoose.Types.ObjectId,
+                ref: "Order"
             },
-            provider:{
-                type:mongoose.Types.ObjectId,
-                ref:'ServiceProvider'
-            },
-            status:{
-                type:String,
-                required:true
-            },
-            orderID:{
-                type:mongoose.Types.ObjectId
-            }
         }
     ],
     refers:[
@@ -41,10 +35,7 @@ const userSchema = mongoose.Schema({
         }
     ],
     searches:[],
-    token:{
-        type:String,
-        required:true
-    }
+    token:String
 })
 
 module.exports = userSchema
