@@ -6,6 +6,7 @@ import { Loading } from './../Home/Users/components/Loading';
 import { main } from './../../utils/colors';
 import Bookings from './../Home/Users/Bookings';
 import { useEffect, useState } from 'react';
+import UserBottomNav from './Navbar/UserBottomNav';
 
 const Tab = createBottomTabNavigator();
 
@@ -22,6 +23,7 @@ function UserNavigation() {
         Object.keys(data).length !== 0 || fetch ? <Tab.Navigator
           initialRouteName="Home"
           screenOptions={{ headerShown: false }}
+          tabBar={props => <UserBottomNav {...props}/>}
         >
           <Tab.Screen options={{
             tabBarHideOnKeyboard: true

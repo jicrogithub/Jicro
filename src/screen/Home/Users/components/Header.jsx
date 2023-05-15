@@ -1,15 +1,41 @@
-import React, { useState, useEffect, useRef, useCallback,memo } from 'react';
+import React, { useState, useEffect, useRef, useCallback, memo } from 'react';
 import { View, TouchableWithoutFeedback, TextInput, Image, Keyboard, Animated, Easing, Text, TouchableOpacity } from 'react-native';
 import { main } from "../../../../utils/colors";
 import MapView, { Marker } from 'react-native-maps';
 import GooglePlacesInput from './../../ServiceProvider/components/GooglePlacesAutocomplete';
 import RBSheet from 'react-native-raw-bottom-sheet';
 import Button from './../../../components/Button';
-import { requestLocationPermission, getCurrentPostiton } from '../../../../helper/Location';
+import { requestLocationPermission, getCurrentPostiton, getCurrentLocationWithLocality } from '../../../../helper/Location';
 import { useNavigation } from '@react-navigation/native';
+import { getCurrentLocation } from './../../../../helper/Location';
+import { getData } from '../../../../helper/LocalStorage';
 const Header = ({ func }) => {
   const navigation = useNavigation()
   const [inputSelected, setInputSelected] = useState(false);
+  const [address, setAddress] = useState({
+    address: '',
+    locality: ''
+  })
+  useEffect(() => {
+    // getCurrentLocationWithLocality()
+    const getAddr = async () => {
+      try {
+        const address_formated = await getData('address_formated')
+        const locality = await getData('locality')
+        // console.log(address_formated)
+        setAddress({
+          address: address_formated,
+          locality
+        })
+      } catch (e) {
+        setAddress({
+          address: "",
+          locality: ""
+        })
+      }
+    }
+    getAddr()
+  }, [])
   const [placeholderIndex, setPlaceholderIndex] = useState(0);
   const [animatedValue] = useState(new Animated.Value(0));
   const [fadeValue] = useState(new Animated.Value(1));
@@ -85,19 +111,19 @@ const Header = ({ func }) => {
         <View className="flex flex-row items-center gap-2 mb-3" >
           <Image source={require('../assets/location.png')} className="w-8 h-8" />
           <View className="" >
-            <Text className="text-white text-2xl font-black">Jaganpura</Text>
+            <Text className="text-white text-2xl font-black">{address.locality}</Text>
             <View className="flex flex-row items-center " >
-              <Text className="text-white text-md font-semibold">East Lakshmi Nagar, Patna</Text>
-              <TouchableOpacity onPress={async () => {
+              <Text className="text-white text-md font-semibold">{address.address.length > 32 ? `${address.address.slice(0, 36)}...` : address.address}</Text>
+              <TouchableOpacity onPress={() => {
                 refRBSheet.current.open()
-                await getLiveLocation()
+                // await getLiveLocation()
               }} >
                 <Image className="h-6 w-6" source={require("../assets/drop_down.png")} />
               </TouchableOpacity>
             </View>
           </View>
         </View>
-        <TouchableOpacity onPress={()=>{
+        <TouchableOpacity onPress={() => {
           navigation.navigate('Search')
         }} activeOpacity={0.7} className="h-10 w-full rounded-2xl bg-gray-100 flex flex-row items-center">
           <Image source={require('../assets/search.png')} className="w-5 h-5 mx-3" />
@@ -113,50 +139,29 @@ const Header = ({ func }) => {
           {/* <TextInput className="h-full flex-1" style={{ fontSize: 16 }} /> */}
         </TouchableOpacity>
         <RBSheet
-          height={600}
+          height={500}
           dragFromTopOnly={true}
           animationType={'slide'}
           ref={refRBSheet}
           closeOnDragDown={true}
-          closeOnPressMask={true}
+          // closeOnPressMask={true}
           customStyles={{
             wrapper: {
               backgroundColor: "transparent"
             },
             draggableIcon: {
-              backgroundColor: "#fff",
+              backgroundColor: main.primary,
               width: 70
             },
             container: {
-              backgroundColor: "#202020",
+              // backgroundColor: main.primary,
               paddingLeft: 10,
               paddingRight: 10,
               borderRadius: 20
             }
           }}
         >
-          <GooglePlacesInput setCords={setCords} onChange={handleRegionChange} />
-          <Button func={async () => {
-            const address = await getCurrentLocation()
-            // setAddress(address)
-            refRBSheet.current.close()
-          }} text="Add Your Current Location" />
-          <MapView
-            ref={mapRef}
-            loadingBackgroundColor='#000'
-            loadingEnabled={true}
-            loadingIndicatorColor={main.primary}
-            style={{
-              flex: 1,
-              marginTop: 5,
-              borderRadius: 10
-            }}
-            initialRegion={cords}
-          >
-            <Marker
-              coordinate={cords}
-            />
-          </MapView>
+          <GooglePlacesInput setCords={setCords} setAddress={setAddress} onChange={handleRegionChange} refRBSheet={refRBSheet} />
         </RBSheet>
       </View>
     </TouchableWithoutFeedback>

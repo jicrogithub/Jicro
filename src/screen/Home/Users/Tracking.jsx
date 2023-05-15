@@ -62,7 +62,11 @@ const Tracking = () => {
 
   useEffect(() => {
     socket.on('delivery location receive', (data) => {
-      console.log(data)
+      // console.log(data)
+      mapRef.current?.animateToRegion({
+        latitude: data.latitude,
+        longitude: data.longitude,
+      }, 1000);
       animatedMarker(data[0], data[1]);
       setDestination({
         coordinates: {

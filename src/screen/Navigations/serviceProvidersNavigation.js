@@ -4,6 +4,7 @@ import Profile from '../Home/ServiceProvider/Profile';
 import ServiceProviderHome from './../Home/ServiceProvider/ServiceProviderHome';
 import Wallet from './../Home/ServiceProvider/Wallet';
 import ListedServices from './../Home/ServiceProvider/ListedServices';
+import ServiceProviderNav from './Navbar/ServiceProviderNav';
 
 const Tab = createBottomTabNavigator();
 
@@ -12,6 +13,7 @@ function ServiceProviderNavigation() {
     <Tab.Navigator
     initialRouteName="Home"
     screenOptions={{headerShown:false}}
+    tabBar={props => <ServiceProviderNav {...props}/>}
     >
       <Tab.Screen options={{
         tabBarHideOnKeyboard:true

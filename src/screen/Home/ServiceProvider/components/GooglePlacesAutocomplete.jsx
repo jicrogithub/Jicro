@@ -1,38 +1,30 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import { key } from "../../../../constants/API_KEYS"
-const GooglePlacesInput = ({ setCords,setAddress,onChange }) => {
+import { getCurrentLocationWithLocality } from '../../../../helper/Location';
+import Button from './../../../components/Button';
+import { setData } from './../../../../helper/LocalStorage';
+const GooglePlacesInput = ({ setCords, setAddress, onChange, refRBSheet }) => {
     return (
         <GooglePlacesAutocomplete
             fetchDetails={true}
-            placeholder='Search' 
-            onPress={(data, details) => {
+            placeholder='Search'
+            onPress={async (data, details) => {
+                setAddress({
+                    address: details.formatted_address,
+                    locality: details.address_components[2].long_name
+                })
+                await setData('address_formatted', details.formatted_address);
+                await setData('locality', details.address_components[2].long_name);
                 // 
                 // 
                 // 'details' is provided when fetchDetails = true
-                onChange({
-                    latitude: details.geometry.location.lat,
-                    longitude: details.geometry.location.lng,
-                    latitudeDelta: 0.002,
-                    longitudeDelta: 0.000001
-                })
-                
+
                 // setAddress(()=>details.formatted_address)
             }}
             styles={{
                 textInputContainer: {
                     flexDirection: 'row',
-                },
-                textInput: {
-                    backgroundColor: '#fff',
-                    height: 44,
-                    borderRadius: 5,
-                    paddingVertical: 5,
-                    paddingHorizontal: 10,
-                    fontSize: 15,
-                    flex: 1,
-                    color: '#000', // set text color to white
-                    // placeholderTextColor: '#000000', // set placeholder text color to black
                 },
                 poweredContainer: {
                 },
@@ -62,7 +54,18 @@ const GooglePlacesInput = ({ setCords,setAddress,onChange }) => {
                 language: 'en',
             }}
 
-        />
+        >
+            <Button func={async () => {
+                const { address, locality } = await getCurrentLocationWithLocality()
+                // console.log(address,
+                //     locality)
+                setAddress({
+                    address,
+                    locality
+                })
+                refRBSheet.current.close()
+            }} text="Add Your Current Address" />
+        </GooglePlacesAutocomplete>
     );
 };
 

@@ -54,6 +54,10 @@ const MapSP = () => {
             latitudeDelta: 0.00002,
             longitudeDelta: 0.0001,
         });
+        mapRef.current?.animateToRegion({
+            latitude: data.latitude,
+            longitude: data.longitude,
+          }, 1000);
         return () => {
             socket.off('delivery location receive');
         }

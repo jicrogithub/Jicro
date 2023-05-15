@@ -5,7 +5,7 @@ import Seperator from "./components/Seperator"
 import WhatsApp from './components/WhatsApp';
 import { useAuth } from '../../suppliers/BackendInteractions/Auth';
 import { useEffect } from 'react';
-import { requestLocationPermission } from '../../helper/Location';
+import { getCurrentLocationWithLocality, requestLocationPermission } from '../../helper/Location';
 import { getCurrentLocation, getCurrentPostiton } from './../../helper/Location';
 import RBSheet from 'react-native-raw-bottom-sheet';
 import Button from '../components/Button';
@@ -67,6 +67,7 @@ const Auth = ({ navigation }) => {
     const match = url.url.match(regExp);
     if (match && auth === "Auth") {
       const waId = match[1];
+      // await getCurrentLocationWithLocality()
       const address = await getCurrentLocation();
       const coords = await getCurrentPostiton()
       verifyUser(waId, {

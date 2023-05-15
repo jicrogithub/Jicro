@@ -4,7 +4,6 @@ import Carousel from './components/Carousel';
 import UniversalHeader from './../../components/Universalheader';
 import { main } from '../../../utils/colors';
 import Separator from './../../Auth/components/Seperator';
-import MapView, { Marker, } from 'react-native-maps';
 import { requestLocationPermission } from '../../../helper/Location';
 import { getCurrentPostiton, getCurrentLocation } from './../../../helper/Location';
 import Button from './../../components/Button';
@@ -15,39 +14,14 @@ import { usePost } from '../../../suppliers/BackendInteractions/Post';
 const Preview = ({ navigation }) => {
     const { addService, shouldRedirect } = usePost()
     const { data, setRedirect } = useData()
+    const [loading, setLoading] = useState(false)
     useEffect(() => {
         setRedirect(false)
     }, [])
     useEffect(() => {
-        shouldRedirect && navigation.navigate("Profile")
+        setLoading(false)
+        shouldRedirect && navigation.navigate('ServiceProviderNavigation', { screen: 'Services' });
     }, [shouldRedirect])
-    const [loading, setLoading] = useState(false)
-    const mapRef = useRef(null);
-    const [cords, setCords] = useState({
-        latitude: 0,
-        longitude: 0,
-        latitudeDelta: 0,
-        longitudeDelta: 0,
-    })
-    useEffect(() => {
-        getLiveLocation()
-    }, []);
-    const handleRegionChange = useCallback((newCords) => {
-        setCords(newCords);
-        mapRef?.current?.animateToRegion(newCords, 3000);
-    }, [])
-    const getLiveLocation = async () => {
-        const location = await requestLocationPermission()
-        if (location === "granted") {
-            const response = await getCurrentPostiton()
-            handleRegionChange({
-                latitude: response.latitude,
-                longitude: response.longitude,
-                latitudeDelta: 0.0002,
-                longitudeDelta: 0.000001
-            });
-        }
-    }
     return (
         <View className="flex-1 flex-col justify-between">
             <UniversalHeader />
@@ -104,29 +78,6 @@ const Preview = ({ navigation }) => {
                             <Text className="text-gray-700 font-black text-sm" >Note: {data?.note}</Text>
                         </View>
                     }
-                </View>
-                <View className="" >
-                    <MapView
-                        ref={mapRef}
-                        loadingBackgroundColor='#000'
-                        loadingEnabled={true}
-                        loadingIndicatorColor={main.primary}
-                        style={{
-                            flex: 1,
-                            marginTop: 5,
-                            borderRadius: 10
-                        }}
-                        className={" rounded-xl bg-black h-96"}
-                        initialRegion={cords}
-                    // showsMyLocationButton={false}
-                    // showsUserLocation={true} // show callouts with titles by default
-
-                    >
-                        <Marker
-                            coordinate={cords}
-                        >
-                        </Marker>
-                    </MapView>
                 </View>
             </ScrollView>
             <View className="self-stretch m-2" >

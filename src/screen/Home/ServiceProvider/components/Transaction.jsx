@@ -9,7 +9,7 @@ const Transaction = () => {
             <Text className="w-[70%] text-black font-black text-md" > Watter Tap Fitting</Text>
             <Text className="px-3 py-1 text-black font-bold text-lg bg-green-300 rounded-xl" >+400</Text>
         </View>
-        <Text className={`text-[${main.primary}] font-black text-center mt-2`} >View Details</Text>
+        {/* <Text className={`text-[${main.primary}] font-black text-center mt-2`} >View Details</Text> */}
     </View>
   )
 }

@@ -21,7 +21,7 @@ const Card = ({ showcase, title, price, location, orderID, _id, status }) => {
     }, [])
     return (
         <View className="mx-1 my-2" >
-            <View style={main.shadows} className="bg-white rounded-xl mx-1 w-50 max-h-44  flex flex-row justify-between" >
+            <View style={main.shadows} className="bg-white rounded-xl mx-1 w-50 max-h-48  flex flex-row justify-between" >
                 <View className="w-[80%]  h-full rounded-l-xl flex flex-col px-3 py-2 gap-2" >
                     <Text className="font-bold text-[16px] mb-[-20px] text-gray-600 " >{title.length > 28 ? `${title.slice(0,28)}...`:title}</Text>
                     <View className="flex flex-row gap-4 justify-center items-center" >

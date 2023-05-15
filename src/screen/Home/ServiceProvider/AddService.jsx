@@ -8,6 +8,7 @@ import UniversalHeader from '../../components/Universalheader';
 import { useData } from '../../../suppliers/StateManagement/DataTransfer';
 import { useEffect } from 'react';
 import { useUpload } from '../../../suppliers/BackendInteractions/Utils';
+import { messagePopup } from './../../../helper/Message';
 const AddService = ({ navigation }) => {
     const { setData, shouldRedirect, setRedirect } = useData()
     const { upload, uri, imageFor } = useUpload()
@@ -27,7 +28,6 @@ const AddService = ({ navigation }) => {
     const notIncludedTextInputRef = useRef([]);
     const [count, setCount] = useState(0)
     const [imagesUploaded, setImagesUploaded] = useState(false);
-
     const handleTextInputBlur = useCallback((index, text, type) => {
         if (type === "included") {
             setIncludedLists(includedLists => {
@@ -43,7 +43,7 @@ const AddService = ({ navigation }) => {
             });
         }
     }, []);
-
+    
     const handleAddButtonPress = useCallback((type) => {
         if (type === "included") {
             setIncluded(included => {
@@ -59,7 +59,7 @@ const AddService = ({ navigation }) => {
             });
         }
     }, []);
-
+    
     const handleRemoveButtonPress = useCallback((index, type) => {
         if (type === "included") {
             setIncludedLists(includedLists => {
@@ -85,14 +85,14 @@ const AddService = ({ navigation }) => {
         }
     }, [imageFor])
     useEffect(() => {
-        const checkEveryImagesUploaded = images.every(element => element?.includes('http://res'));
+        const checkEveryImagesUploaded = images.every(element => element?.startsWith('https://res'));
         if (checkEveryImagesUploaded) {
             setImagesUploaded(true)
-        }else{
+        } else {
             setImagesUploaded(false)
         }
-
-    }, [imageFor,images])
+        
+    }, [imageFor, images])
     return (
         <>
             <UniversalHeader />
@@ -267,7 +267,7 @@ const AddService = ({ navigation }) => {
                 </View>
                 <View className="mb-3" >
                     <Button func={() => {
-                        if (title && price && images.length !== 0 && includedLists.length !== 0 && note && imagesUploaded) {
+                        if (title !== "" && price !== 0 && images.length !== 0 && includedLists.length !== 0 && note && imagesUploaded) {
                             setRedirect(true)
                             setData({
                                 title,
@@ -277,7 +277,9 @@ const AddService = ({ navigation }) => {
                                 notIncludedLists,
                                 note
                             })
-                            setImages([])
+                            // setImages([])
+                        } else {
+                            messagePopup("Please Add All the Details", "Seems You Did'nt Added All The Details", 'danger')
                         }
                     }} text="Add" />
                 </View>

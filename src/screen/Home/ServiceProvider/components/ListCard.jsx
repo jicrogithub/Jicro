@@ -1,10 +1,11 @@
-import { View, Text, Image, TextInput, TouchableOpacity, ScrollView } from 'react-native'
+import { View, Text, Image, TextInput, TouchableOpacity, ScrollView, TouchableWithoutFeedback } from 'react-native'
 import React, { useState, useRef, useEffect, useCallback } from 'react'
 import { main } from "../../../../utils/colors"
 import Button from '../../../components/Button'
 import { useNavigation } from '@react-navigation/native';
 import RBSheet from 'react-native-raw-bottom-sheet';
 import Carousel from './Carousel';
+import { messagePopup } from './../../../../helper/Message';
 const ListCard = ({ images, title, price, service_id }) => {
     const navigation = useNavigation()
     const refRBSheet = useRef()
@@ -86,9 +87,10 @@ const ListCard = ({ images, title, price, service_id }) => {
                     </View>
                 </View>
                 <Button func={() => {
-                    refRBSheet.current.open()
+                    messagePopup("This Feature is Under Development","We Will be Updating it soon",'danger')
+                    // refRBSheet.current.open()
                 }} text="Edit Service" />
-                <RBSheet
+                {/* <RBSheet
                     height={500}
                     ref={refRBSheet}
                     closeOnDragDown={true}
@@ -109,18 +111,22 @@ const ListCard = ({ images, title, price, service_id }) => {
                     }}
                 >
                     <ScrollView className="w-full px-2 " >
-                        <Carousel images={images} />
+                        <TouchableWithoutFeedback onPress={()=>{
+                            messagePopup("This Feature is Under Development","We Will be Updating it soon",'danger')
+                        }} >
+                            <Carousel images={images} />
+                        </TouchableWithoutFeedback>
                         <View>
                             <Text className="font-black text-gray-800 text-lg" >Title</Text>
                             <TextInput
                                 keyboardType="default"
                                 onChangeText={(e) => {
-                                    // setPrice(e)
+                                   
                                 }}
                                 cursorColor={'#1c1c1c'}
                                 className="bg-gray-100 rounded-xl p-2 
                           text-zinc-700 font-bold text-md mb-2"
-                                placeholder="Water Tap Fix"
+                                placeholder={title}
                                 placeholderTextColor={'#15151a'}
                             />
                         </View>
@@ -134,11 +140,11 @@ const ListCard = ({ images, title, price, service_id }) => {
                                 cursorColor={'#1c1c1c'}
                                 className="bg-gray-100 rounded-xl p-2 
                           text-zinc-700 font-bold text-md mb-2"
-                                placeholder="500"
+                                placeholder={price}
                                 placeholderTextColor={'#15151a'}
                             />
-                        </View>
-                        <View style={main.shadows} className="h-min-96 w-full p-1 bg-white rounded-xl" >
+                        </View> */}
+                        {/* <View style={main.shadows} className="h-min-96 w-full p-1 bg-white rounded-xl" >
                             <View>
                                 <View className="flex flex-row items-center" >
                                     <Image className="w-14 h-14" source={require("../assets/plus.gif")} />
@@ -234,9 +240,9 @@ const ListCard = ({ images, title, price, service_id }) => {
                                 })
 
                             }
-                        </View>
-                    </ScrollView>
-                </RBSheet>
+                        </View> */}
+                    {/* </ScrollView>
+                </RBSheet> */}
             </View>
         </>
     )

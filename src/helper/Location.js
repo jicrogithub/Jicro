@@ -71,6 +71,37 @@ export const getCurrentLocation = async () => {
   }
   return address_formated
 }
+export const getCurrentLocationWithLocality = async () => {
+  console.log("Hello jj")
+  const addressFormatted = await getData('address_formatted');
+  const locality = await getData('locality');
+  console.log("Helloff")
+  if (!addressFormatted || !locality) {
+    try {
+      const currentPosition = await getCurrentPostiton();
+      const response = await axios.get(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${currentPosition.latitude},${currentPosition.longitude}&key=${key.google_maps_key}`);
+      const formattedAddress = response.data.results[0].formatted_address;
+      const addressComponents = response.data.results[0].address_components;
+      const currentLocality = addressComponents.find(component => component.types.includes('locality')).long_name;
+      console.log("currentLocality")
+      await setData('address_formatted', formattedAddress);
+      await setData('locality', currentLocality);
+      return {
+        address: formattedAddress,
+        locality: currentLocality
+      };
+    } catch (error) {
+      console.error(error);
+      throw new Error('Failed to get current location with locality');
+    }
+  } else {
+    return {
+      address: addressFormatted,
+      locality: locality
+    };
+  }
+};
+
 
 function deg2rad(deg) {
   return deg * (Math.PI / 180)

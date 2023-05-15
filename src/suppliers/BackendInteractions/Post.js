@@ -20,8 +20,7 @@ const usePost = create(
             await axios.post(`${url}/add-service`, {
                 token, title, images, price, provider, details, note, included, notIncluded
             }).then((e) => {
-                
-                e.data.response === true && set(() => ({
+               set(() => ({
                     shouldRedirect: true
                 }))
             }).catch((e) => {
@@ -40,6 +39,9 @@ const usePost = create(
             })
         },
         updateStatus : async (_id, status) => {
+            set(()=>({
+                shouldRedirectToMapSP:false
+            }))
             await axios.post(`${url}/update-status`, {
                 _id, status
             }).then((e) => {
@@ -49,6 +51,9 @@ const usePost = create(
             })
         },
         updateProfile : async (updates) => {
+            set(()=>({
+                shouldRefreshProfileScreen:false
+            }))
             const token = await getData("token")
             set(()=>({
                 shouldRefreshProfileScreen:false

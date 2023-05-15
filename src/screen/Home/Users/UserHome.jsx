@@ -36,18 +36,21 @@ const UserHome = ({ navigation }) => {
                 return <Crousel />;
             case 'Trending':
                 return (
-                    <>
-                        <Text style={styles.sectionTitle}>Trending</Text>
+                    <View className="my-2" >
+                        {/* <Text>Trending</Text> */}
                         <Trending navigation={navigation} />
-                    </>
+                        {/* <View className="h-20 w-full p-2" >
+                            <View className="h-32 w-full bg-emerald-400 rounded-xl" ></View>
+                        </View> */}
+                    </View>
                 );
             case 'Suggested':
                 return (
                     <>
-                        <Text style={styles.sectionTitle}>Suggested</Text>
-                        <View className="items-end mr-2" >
-                            <Tabs />
-                        </View>
+                        {/* <Text style={styles.sectionTitle}>Suggested</Text> */}
+                        {/* <View className="items-end mr-2" > */}
+                            {/* <Tabs /> */}
+                        {/* </View> */}
                         <Suggested />
                     </>
                 );

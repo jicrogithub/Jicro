@@ -22,7 +22,7 @@ const Profile = () => {
   const refRBSheet = useRef()
   const { uri, imageFor, upload } = useUpload()
   const { updateProfile, shouldRefreshProfileScreen } = usePost()
-
+console.log(data)
   useEffect(() => {
     if (imageFor === "banner") {
       setUpdates({ ...updates, [imageFor]: uri })
@@ -36,19 +36,19 @@ const Profile = () => {
     if(shouldRefreshProfileScreen){
       refRBSheet.current.close()
       messagePopup('Profile Updated SuccesFully', `${Object.keys(updates).join(', ')} has been Succesfully updated`)
+      getSP();
+      setUpdates({})
     }
   },[shouldRefreshProfileScreen])
-  const onRefresh = useCallback(() => {
-    setRefreshing(true);
-    setTimeout(() => {
-      setRefreshing(false);
-      getSP();
-    }, 2000);
-  }, [getSP]);
+  // const onRefresh = useCallback(() => {
+  //   setRefreshing(true);
+  //   setTimeout(() => {
+  //     setRefreshing(false);
+  //     getSP();
+  //   }, 2000);
+  // }, [getSP]);
 
-  console.log(updates)
   const { logo, banner, name, ratings, services } = data
-  console.log
   const renderItem = useCallback(({ item }) => <Card showcase={true} />, []);
   return (
     <View className="bg-white h-full">
@@ -86,7 +86,7 @@ const Profile = () => {
           <Seperator />
           <View className="flex flex-col justify-between items-center ">
             <Text className="text-gray-600 font-black text-md" >Service Completed</Text>
-            <Text className="font-black text-blue-500 text-3xl" >{services?.length}</Text>
+            <Text className="font-black text-blue-500 text-3xl" >0</Text>
           </View>
           <Seperator />
           <View className="flex flex-col justify-between items-center">
@@ -98,11 +98,14 @@ const Profile = () => {
           </View>
         </View>
         <View>
-          <Button text="Settings" func={() => {
+          <Button text="Edit Profile" func={() => {
             refRBSheet.current.open()
           }} />
         </View>
-        <FlatList
+        <View className="h-64 w-full flex justify-center items-center" >
+          <Image className="h-52 w-52" source={require('./assets/nothing.gif')} />
+        </View>
+        {/* <FlatList
           data={services}
           renderItem={renderItem}
           keyExtractor={item => item.toString()}
@@ -110,7 +113,7 @@ const Profile = () => {
           refreshControl={
             <RefreshControl colors={[main.primary]} refreshing={refreshing} onRefresh={onRefresh} />
           }
-        />
+        /> */}
       </View>
       <RBSheet
         height={400}
@@ -193,7 +196,7 @@ const Profile = () => {
             {/* <Image className="h-10 w-10" source={require("./assets/shop.png")} /> */}
             <TextInput onChangeText={(e) => {
               setUpdateName(e)
-            }} className="text-gray-700 bg-gray-200 text-lg font-bold p-3 capitalize rounded-xl" placeholder={updateName ? updateName : name} placeholderTextColor={"#0d0d0d"} />
+            }} className="text-gray-700 bg-gray-200 text-lg font-bold p-3 capitalize rounded-xl" placeholder={name} placeholderTextColor={"#0d0d0d"} />
           </View>
           {/* </View> */}
         </View>
