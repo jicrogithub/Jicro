@@ -1,4 +1,4 @@
-import { View, Text, FlatList } from 'react-native'
+import { View, Text, FlatList, Image } from 'react-native'
 import React, { useMemo, useCallback } from 'react'
 import Card from './Card';
 import { useFetch } from '../../../../suppliers/BackendInteractions/Fetch';
@@ -19,7 +19,7 @@ const Suggested = () => {
 
     return (
         <>
-            {!isEmpty && (
+            {!isEmpty ? (
                 <FlatList
                     data={data}
                     keyExtractor={keyExtractor}
@@ -28,7 +28,9 @@ const Suggested = () => {
                     vertical
                     className='mx-2 mb-4'
                 />
-            )}
+            ):<View className="w-full" >
+                <Image className="w-44 h-44" source={require("../assets/not-found.gif")} />
+                </View>}
         </>
     )
 }

@@ -1,6 +1,8 @@
 import { NavigationContainer } from '@react-navigation/native';
 import React, { useEffect } from "react"
-import FlashMessage from "react-native-flash-message"
+import CodePush from 'react-native-code-push';
+import { AppState } from 'react-native';
+
 /**
  * @Import ~ Zustand States Managemant
  */
@@ -51,13 +53,32 @@ import Buy from './src/screen/Home/Users/Buy';
 import Tracking from './src/screen/Home/Users/Tracking';
 import MapSP from './src/screen/Home/ServiceProvider/MapSP';
 import Search from './src/screen/Home/Users/Search';
+import FlashMessage from 'react-native-flash-message';
 
 const Stack = createNativeStackNavigator();
 
-export default function App() {
+function App() {
   useEffect(()=>{
     pushNotification()
   },[])
+
+useEffect(() => {
+  const handleAppStateChange = (newState) => {
+    if (newState === 'active') {
+      CodePush.sync({ installMode: CodePush.InstallMode.IMMEDIATE }, syncWithCodePush);
+    }
+  };
+
+  AppState.addEventListener('change', handleAppStateChange);
+
+  return () => {
+    AppState.removeEventListener('change', handleAppStateChange);
+  };
+}, []);
+
+const syncWithCodePush = (status) => {
+  console.log('Codepush sync status', status);
+};
   return (
     <>
       <NavigationContainer>
@@ -117,7 +138,7 @@ export default function App() {
           options={{ headerShown: false, }}
           component={Preview} />
         <Stack.Screen name="MapSP"
-          options={{ headerShown: false, }}
+          options={{ headerShown: false }}
           component={MapSP} />
       </Stack.Navigator>
     </NavigationContainer>
@@ -125,3 +146,7 @@ export default function App() {
     </>    
   );
 }
+
+export default CodePush({
+  checkFrequency:CodePush.CheckFrequency.ON_APP_START,
+})(App);

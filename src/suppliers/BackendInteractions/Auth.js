@@ -17,7 +17,7 @@ const useAuth = create(
                 long: data.long,
                 token
             }).then((e) => {
-                console.log(e)
+                console.log(e.data.token)
                 setData("token", e.data.token)
                 setData("auth-user", "true")
                 set(() => ({

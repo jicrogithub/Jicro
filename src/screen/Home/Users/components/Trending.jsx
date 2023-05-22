@@ -15,7 +15,7 @@ const Trending = () => {
         data={[
           {
             id: 1,
-            text: "Carpantery",
+            text: "Carpentery",
             img: icons.carpenter,
             redirectTo: "TrendingExtended",
           },
