@@ -28,7 +28,7 @@ const Suggested = () => {
                     vertical
                     className='mx-2 mb-4'
                 />
-            ):<View className="w-full" >
+            ):<View className="w-full felx justify-center items-center" >
                 <Image className="w-44 h-44" source={require("../assets/not-found.gif")} />
                 </View>}
         </>

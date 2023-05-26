@@ -15,10 +15,10 @@ const usePost = create(
             }))
         },
         addService: async (data) => {
-            const { title, images, price, provider, details, note, included, notIncluded } = data
+            const { title, images, price, provider, details, note, included, notIncluded, sub_category, category } = data
             const token = await getData("token")
             await axios.post(`${url}/add-service`, {
-                token, title, images, price, provider, details, note, included, notIncluded
+                token, title, images, price, provider, details, note, included, notIncluded, category, sub_category
             }).then((e) => {
                set(() => ({
                     shouldRedirect: true

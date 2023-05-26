@@ -5,8 +5,8 @@ const url = IP.local
 const useUpload = create(
     (set) => ({
         uri: "",
-        imageFor:"",
-        upload: async (file,imageFor) => {
+        imageFor: "",
+        upload: async (file, imageFor) => {
             try {
                 let formData = new FormData();
                 formData.append('img', {
@@ -20,17 +20,27 @@ const useUpload = create(
                         'Content-Type': 'multipart/form-data',
                     }
                 }).then((e) => {
-                    set(()=>({
-                        uri:e.data.result,
-                        imageFor:imageFor
+                    set(() => ({
+                        uri: e.data.result,
+                        imageFor: imageFor
                     }))
                 }).catch((e) => {
-                    
+
                 })
             } catch (e) {
-                
+
             }
         },
     }));
 
-export { useUpload }
+const useTestLogin = create((set) => ({
+    enabled:false,
+    getTestPermision: async ()=>{
+        const {data} = await axios.get(`${url}/is-test-login`)
+        set(()=>({
+            enabled:data.response
+        }))
+    }
+}))
+
+export { useUpload, useTestLogin }

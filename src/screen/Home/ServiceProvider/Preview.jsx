@@ -19,13 +19,14 @@ const Preview = ({ navigation }) => {
         setRedirect(false)
     }, [])
     useEffect(() => {
+        console.log("Hello")
         setLoading(false)
         shouldRedirect && navigation.navigate('ServiceProviderNavigation', { screen: 'Services' });
     }, [shouldRedirect])
     return (
-        <View className="flex-1 flex-col justify-between">
+        <View className="w-full bg-white h-full">
             <UniversalHeader />
-            <ScrollView className="bg-white p-2 h-full" >
+            <ScrollView className="bg-white p-2 h-full mt-2" >
                 <Carousel images={data.images} />
                 <View className="w-full h-14 p-1 bg-gray-100 my-2 rounded-xl flex flex-row justify-around" >
                     <View className="w-28 h-full bg-gray-200 rounded-xl flex justify-center items-center" >
@@ -91,6 +92,8 @@ const Preview = ({ navigation }) => {
                         notIncluded: data.notIncludedLists,
                         note: data.note,
                         provider: "",
+                        category:data.category,
+                        sub_category:data.sub_category
                     })
                 }} text="Publish Service" />
             </View>

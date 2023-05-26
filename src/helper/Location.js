@@ -72,10 +72,8 @@ export const getCurrentLocation = async () => {
   return address_formated
 }
 export const getCurrentLocationWithLocality = async () => {
-  console.log("Hello jj")
   const addressFormatted = await getData('address_formatted');
   const locality = await getData('locality');
-  console.log("Helloff")
   if (!addressFormatted || !locality) {
     try {
       const currentPosition = await getCurrentPostiton();

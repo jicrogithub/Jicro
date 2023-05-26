@@ -10,6 +10,8 @@ const images = [
 
 const Carousel = () => {
   // 
+  const imageWidth = 350;
+  const imageSpacing = 8;
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const scrollViewRef = useRef(null);
 
@@ -27,8 +29,6 @@ const Carousel = () => {
     return () => clearInterval(intervalId);
   }, [currentImageIndex]);
 
-  const imageWidth = 350;
-  const imageSpacing = 8;
 
   return (
     <ScrollView

@@ -27,8 +27,7 @@ const Card = ({ images, title, price, ratings, provider, checkedCondition,servic
       }
       <View style={main.shadows} className="bg-white rounded-xl w-50 h-[12rem] p-1 mb-2 flex flex-col justify-around" >
         <Image
-          source={{ uri: 
-            `${images[0].slice(0, images[0].lastIndexOf('/'))}/q_50${images[0].slice(images[0].lastIndexOf('/'))}` }}
+          source={{ uri: images[0] }}
           className="w-50 h-40 rounded-xl"
         />
         <Text className="text-gray-700 text-[16px] font-black text-center my-1" >{title}</Text>
@@ -42,7 +41,7 @@ const Card = ({ images, title, price, ratings, provider, checkedCondition,servic
           </View>
           <View className="flex flex-row gap-1 items-center" >
             <Image className="h-7 w-7" source={require("../assets/ratings.gif")} />
-            <Text className="font-black text-gray-500 text-lg" >{ratings + 2.5}</Text>
+            <Text className="font-black text-gray-500 text-lg" >{ratings === 0 ? "New" : ratings}</Text>
           </View>
           <View className={`w-20 h-10 bg-[${main.primary}]  rounded-xl flex justify-around items-center`} >
             <Text className="font-semibold text-sm text-white line-through" >₹ {price.manupulated}</Text>

@@ -13,7 +13,6 @@ const icons = {
     electrician,
     plumber,
     cleaning,
-    gardner,
     technician,
     barber,
     car_wash,

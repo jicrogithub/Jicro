@@ -1,21 +1,25 @@
-import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
+import React from 'react';
+import { View, Text, TouchableOpacity, StyleSheet, Image, Dimensions } from 'react-native';
 import ICON from "../../../icons/ICONS"
+
+const windowWidth = Dimensions.get('window').width;
 
 function ServiceProviderNav({ state, descriptors, navigation }) {
   let home = ICON.home;
   let wallet = ICON.wallet;
   let profile = ICON.profile;
-  let services = ICON.booking
+  let services = ICON.booking;
+
   return (
-    <View style={style.mainView} className="bg-blue">
+    <View style={styles.mainView} className="bg-blue">
       {state.routes.map((route, index) => {
         const { options } = descriptors[route.key];
         const label =
           options.tabBarLabel !== undefined
             ? options.tabBarLabel
             : options.title !== undefined
-              ? options.title
-              : route.name;
+            ? options.title
+            : route.name;
         const isFocused = state.index === index;
         const onPress = () => {
           const event = navigation.emit({
@@ -34,6 +38,11 @@ function ServiceProviderNav({ state, descriptors, navigation }) {
             target: route.key,
           });
         };
+
+        const dynamicTabStyle = {
+          width: windowWidth / state.routes.length,
+        };
+
         return (
           <TouchableOpacity
             activeOpacity={0.5}
@@ -43,16 +52,16 @@ function ServiceProviderNav({ state, descriptors, navigation }) {
             testID={options.tabBarTestID}
             onPress={onPress}
             onLongPress={onLongPress}
-            style={[style.navTab, isFocused && style.focusStyle]}
+            style={[styles.navTab, isFocused && styles.focusStyle, dynamicTabStyle]}
             key={route.name}
           >
             {/* for any specific type of file  */}
-            {label == "Home" && <Image style={[style.imgIcon , isFocused && style.imgFocus]} source={home} />}
-            {label == "Services" && <Image style={[style.imgIcon , isFocused && style.imgFocus]} source={services} />}
+            {label == "Home" && <Image style={[styles.imgIcon , isFocused && styles.imgFocus]} source={home} />}
+            {label == "Services" && <Image style={[styles.imgIcon , isFocused && styles.imgFocus]} source={services} />}
             {label =="Add Service" && <AddIcon/>}
-            {label == "Profile" && <Image style={[style.imgIcon , isFocused && style.imgFocus]} source={profile} />}
-            {label == "Wallet" && <Image style={[style.imgIcon , isFocused && style.imgFocus]} source={wallet} />}
-            <Text className="text-green-950 text-xs opacity-60" style={[isFocused && style.labelfocus]}>{(label == 'Add Service') ? "" : label}</Text>
+            {label == "Profile" && <Image style={[styles.imgIcon , isFocused && styles.imgFocus]} source={profile} />}
+            {label == "Wallet" && <Image style={[styles.imgIcon , isFocused && styles.imgFocus]} source={wallet} />}
+            <Text className="text-green-950 text-xs opacity-60" style={[isFocused && styles.labelfocus]}>{!(label == 'Add Service') && label}</Text>
           </TouchableOpacity>
         );
       })}
@@ -60,26 +69,24 @@ function ServiceProviderNav({ state, descriptors, navigation }) {
   );
 }
 
-export default ServiceProviderNav;
-
-const AddIcon = ()=>{
-  return(
-    <View className={`w-[50] h-[50] bg-primary flex items-center justify-center rounded-full`}>
-      <Text className="font-medium text-6xl text-white">+</Text>
+const AddIcon = () => {
+  return (
+    <View className={`w-10 h-10  bg-primary flex items-center justify-center rounded-full`}>
+      <Text className="font-medium text-5xl text-gray-400">+</Text>
     </View>
-  )
+  );
 }
 
-const style = StyleSheet.create({
+const styles = StyleSheet.create({
   mainView: {
-    padding: 7,
+    padding: 3,
     flexDirection: "row",
     justifyContent: "space-evenly",
     alignItems: "center",
     gap: 15,
+    backgroundColor:"#fff"
   },
   navTab: {
-    width: 50,
     height: 50,
     padding: 1,
     flexDirection: "column",
@@ -91,16 +98,18 @@ const style = StyleSheet.create({
     // backgroundColor:color.primary,
   },
   imgIcon: {
-    width: 28,
-    height: 28,
-    opacity:0.5
+    width: 25,
+    height: 25,
+    opacity: 0.5
   },
   imgFocus: {
     tintColor: "#684DE9",
-    opacity:1.1
+    opacity: 1.1
   },
-  labelfocus:{
-    color:"#684DE9",
-    opacity:1
+  labelfocus: {
+    color: "#684DE9",
+    opacity: 1
   }
-})
+});
+
+export default ServiceProviderNav;

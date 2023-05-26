@@ -5,18 +5,21 @@ import {
   RefreshControl,
   FlatList,
   ActivityIndicator,
+  Image,
 } from "react-native";
 import React, { useState, useCallback, useEffect } from "react";
 import { main } from "../../../utils/colors";
 import Card from "./components/Card";
 import { useFetch } from "../../../suppliers/BackendInteractions/Fetch";
+import Button from "../../components/Button";
 
-const ServiceProviderHome = () => {
+const ServiceProviderHome = ({ navigation }) => {
   const { ordersData, getOrders, getSP } = useFetch();
   useEffect(() => {
     getSP();
     getOrders();
   }, []);
+  // console.log(ordersData[0].user.location)
   const [noOrders, setNoOrders] = useState(true);
   useEffect(() => {
     const clearID = setTimeout(() => {
@@ -28,35 +31,35 @@ const ServiceProviderHome = () => {
     }, 2000);
     return () => clearTimeout(clearID);
   }, []);
-  console.log(ordersData);
   const [refreshing, setRefreshing] = useState(false);
   const onRefresh = useCallback(() => {
     setRefreshing(true);
+    getOrders();
     setTimeout(() => {
       setRefreshing(false);
     }, 2000);
   }, []);
   const renderItem = ({ item }) => {
     const { user, service, orderID, _id, status } = item;
-    return (
-      <Card
-        _id={_id}
-        key={orderID}
-        orderID={orderID}
-        location={user.location}
-        price={service.price}
-        title={service.title}
-        status={status}
-      />
-    );
+    console.log(item);
+    if (item.user !== null) {
+      return (
+        <Card
+          _id={_id}
+          key={orderID}
+          orderID={orderID}
+          location={user.location}
+          price={service.price}
+          title={service.title}
+          status={status}
+          user={user}
+        />
+      );
+    }
   };
   // console.log(ordersData)
   // make a user acc!
   return (
-    // <View className="h-screen w-full bg-white flex justify-center items-center" >
-    //   <Text className="text-lg text-gray-700 font-black" >Your Account is Being Verified</Text>
-    //   <Text className="text-md text-gray-500 font-black" >If an Urgent Contact Us at +919905833824 </Text>
-    // </View>
     <>
       {Object.keys(ordersData).length !== 0 ? (
         <View className="h-screen bg-white">
@@ -81,17 +84,18 @@ const ServiceProviderHome = () => {
         </View>
       ) : (
         <View>
-          <ActivityIndicator
+          {/* <ActivityIndicator
             animating={true}
             color={main.primary}
             size="large"
-          />
-          <View className="h-screen w-full bg-white flex justify-center items-center">
+          /> */}
+          <View className="h-screen w-full p-10 bg-white flex justify-center items-center">
+            <Image
+              className="h-52 w-52"
+              source={require("./assets/nothing.gif")}
+            />
             <Text className="text-lg text-gray-700 font-black">
-              No Orders Found
-            </Text>
-            <Text className="text-md text-gray-500 font-black">
-              Create a Service To Get Orders
+              No Orders found!
             </Text>
           </View>
         </View>

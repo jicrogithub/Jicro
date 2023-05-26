@@ -20,7 +20,7 @@ const Header = ({ func }) => {
     // getCurrentLocationWithLocality()
     const getAddr = async () => {
       try {
-        const address_formated = await getData('address_formated')
+        const address_formated = await getData('address_formatted')
         const locality = await getData('locality')
         // console.log(address_formated)
         setAddress({
@@ -52,18 +52,6 @@ const Header = ({ func }) => {
     setCords(newCords);
     mapRef?.current?.animateToRegion(newCords, 3000);
   }, [])
-  const getLiveLocation = async () => {
-    const location = await requestLocationPermission()
-    if (location === "granted") {
-      const response = await getCurrentPostiton()
-      handleRegionChange({
-        latitude: response.latitude,
-        longitude: response.longitude,
-        latitudeDelta: 0.0002,
-        longitudeDelta: 0.000001
-      });
-    }
-  }
   const dismissKeyboard = () => {
     Keyboard.dismiss();
   };
@@ -111,9 +99,9 @@ const Header = ({ func }) => {
         <View className="flex flex-row items-center gap-2 mb-3" >
           <Image source={require('../assets/location.png')} className="w-8 h-8" />
           <View className="" >
-            <Text className="text-white text-2xl font-black">{address.locality}</Text>
+            <Text className="text-white text-2xl font-black">{address?.locality}</Text>
             <View className="flex flex-row items-center " >
-              <Text className="text-white text-md font-semibold">{address.address.length > 32 ? `${address.address.slice(0, 36)}...` : address.address}</Text>
+              <Text className="text-white text-md font-semibold">{address?.address?.length > 32 ? `${address?.address?.slice(0, 36)}...` : address?.address}</Text>
               <TouchableOpacity onPress={() => {
                 refRBSheet.current.open()
                 // await getLiveLocation()

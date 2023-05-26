@@ -58,13 +58,13 @@ const Details = ({ navigation }) => {
           <ScrollView className="px-2">
             <Carousel images={serviceData.images} />
             <View className="w-full h-14 p-1 bg-gray-100 my-2 rounded-xl flex flex-row justify-around">
-              <View className="w-28 h-full bg-gray-200 rounded-xl flex justify-center items-center"></View>
+              <View className="w-28 h-full bg-gray-100 rounded-xl flex justify-center items-center"></View>
               <View
                 className={`w-28 h-full bg-[${main.primary}] flex justify-center items-center rounded-xl`}
               >
                 <Text className="text-white font-black text-xl">{`₹ ${serviceData?.price.actual}`}</Text>
               </View>
-              <View className="w-28 h-full bg-gray-200 flex justify-center items-center rounded-xl"></View>
+              <View className="w-28 h-full bg-gray-100 flex justify-center items-center rounded-xl"></View>
             </View>
             <View>
               <Text className="text-gray-600 font-black text-xl text-center ">

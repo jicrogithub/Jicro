@@ -5,13 +5,15 @@ import MapView, { Marker, } from 'react-native-maps';
 import SelectDropdown from 'react-native-select-dropdown'
 import Button from './../../components/Button';
 import { launchImageLibrary } from 'react-native-image-picker';
-import { requestLocationPermission, getCurrentPostiton, getCurrentLocation } from '../../../helper/Location';
+import { requestLocationPermission, getCurrentPostiton, getCurrentLocation, getCurrentLocationWithLocality } from '../../../helper/Location';
 import GooglePlacesInput from './components/GooglePlacesAutocomplete';
 import RBSheet from "react-native-raw-bottom-sheet";
 import WhatsApp from './../../Auth/components/WhatsApp';
 import { useUpload } from '../../../suppliers/BackendInteractions/Utils';
 import { useAuth } from '../../../suppliers/BackendInteractions/Auth';
 import { useLoading } from '../../../suppliers/StateManagement/Loading';
+import { getData } from '../../../helper/LocalStorage';
+import { SUB_CATEGORIES } from '../Users/export/SUB_CATEGORIES';
 const prof = ["Electrician", "Plumbing", "Carpentering", "House Cleaning", "Cooking", "Gardener", "Home organizer", "Painter", "Personal trainer", "Massage therapist", "Hair stylist or barber", "Technician", "Mobile car wash and Fixing."];
 const _Profile = ({ navigation }) => {
   const { verifyServiceProvider, shouldNavigateServiceProvider } = useAuth()
@@ -46,6 +48,7 @@ const _Profile = ({ navigation }) => {
     const regExp = /waId=([\w-]+)/;
     const match = url.url.match(regExp);
     if (match) {
+      await getCurrentLocationWithLocality()
       setLoading(false)
       setButtonText("Phone Number Added")
       const waID = match[1];
@@ -167,18 +170,22 @@ const _Profile = ({ navigation }) => {
             <View className="py-1" >
               <WhatsApp disabled={buttonText !== "" ? true : false} text={`${buttonText !== "" ? buttonText : "Add Phone Number"}`} />
             </View>
-            {
+            {/* {
               address === "" ? <Button func={() => refRBSheet.current.open()} text={"Set Location"} /> :
                 <TouchableOpacity onPress={() => refRBSheet.current.open()} >
                   <Text className="m-2 text-md font-black text-gray-700 text-center" >{address}</Text>
                 </TouchableOpacity>
-            }
+            } */}
             <SelectDropdown
-              data={prof}
+              data={Object.keys(SUB_CATEGORIES).map((e) => {
+                return e.split("_").length === 2
+                  ? e[0].toUpperCase() + e.split("_").join(" ").slice(1)
+                  : `${e[0].toUpperCase()}${e.slice(1)}`;
+              })}
               className="w-full"
               defaultButtonText="Select a Profession"
               onSelect={(selectedItem, index) => {
-                setProfession(selectedItem)
+                setProfession(selectedItem.toLowerCase())
               }}
               buttonTextAfterSelection={useMemo((selectedItem, index) => {
                 return selectedItem
@@ -223,10 +230,11 @@ const _Profile = ({ navigation }) => {
                 </TouchableOpacity>
               )
             }
-            <Button func={() => {
-              if (waId && image.banner && image.logo && image.proof && address && name && profession && imageUploaded) {
+            <Button func={async () => {
+              const addressFormatted = await getData('address_formatted');
+              if (waId && image.banner && image.logo && image.proof && addressFormatted && name && profession && imageUploaded) {
                 verifyServiceProvider(waId, {
-                  address,
+                  address:addressFormatted,
                   name,
                   profession,
                   logo: image.logo,
@@ -239,7 +247,7 @@ const _Profile = ({ navigation }) => {
                 });
               }
               else {
-                alert("Please Fill All The Details")
+                alert("Please Wait while Pictures are Uploading")
               }
             }} text="Continue" />
           </View>

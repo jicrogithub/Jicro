@@ -8,7 +8,7 @@ import { getCurrentPostiton } from './../../../../helper/Location';
 import Button from '../../../components/Button';
 import { useNavigation } from '@react-navigation/native';
 import { usePost } from '../../../../suppliers/BackendInteractions/Post';
-const Card = ({ showcase, title, price, location, orderID, _id, status }) => {
+const Card = ({ showcase, title, price, location, orderID, _id, status, user }) => {
     const navigation = useNavigation()
     const {updateStatus} = usePost()
     const refRBSheet = useRef();
@@ -38,7 +38,7 @@ const Card = ({ showcase, title, price, location, orderID, _id, status }) => {
                                 </View>
                                 <Text className="text-zinc-800 font-black text-lg" >{price.actual}</Text>
                             </View>
-                            <View className="w-28 h-10 bg-gray-200 rounded-xl flex flex-row justify-center items-center" >
+                            <View className="max-w-44 px-1 h-10 bg-gray-200 rounded-xl flex flex-row justify-center items-center" >
                                 <View className="rounded-full w-7 h-7  bg-neutral-100 flex justify-center items-center mr-2" >
                                     <Image className="w-10 h-10" source={require("../assets/location.png")} />
                                 </View>
@@ -100,7 +100,9 @@ const Card = ({ showcase, title, price, location, orderID, _id, status }) => {
                             latitude:location.coordinates[1],
                             longitude:location.coordinates[0],
                             orderID,
-                            address:location.address_formated
+                            address:location.address_formated,
+                            name:user.name,
+                            phone_number:user.phone_number
                         })
                     }} text="Continue" />
                 </View>

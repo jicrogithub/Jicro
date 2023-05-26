@@ -28,7 +28,10 @@ import {
   requestPushNotificationPermision,
 } from "../../helper/Notification";
 import { getData } from "../../helper/LocalStorage";
+import { useTestLogin } from "../../suppliers/BackendInteractions/Utils";
+import { messagePopup } from "../../helper/Message";
 const Auth = ({ navigation }) => {
+  const { enabled } = useTestLogin();
   const [auth, setAuth] = useState(null);
   const {
     verifyUser,
@@ -36,6 +39,7 @@ const Auth = ({ navigation }) => {
     shouldNavigateUser,
     shouldNavigateServiceProvider,
     isError,
+    verifyTest,
   } = useAuth();
   const { setLoading } = useLoading();
   const [status, setStatus] = useState(false);
@@ -43,9 +47,13 @@ const Auth = ({ navigation }) => {
     const getPermision = async () => {
       const permisionStatus = await requestLocationPermission();
       if (permisionStatus === "granted" || permisionStatus !== "denied") {
-        setStatus(false);
+        const { address } = await getCurrentLocationWithLocality();
+        if (address) {
+          setStatus(false);
+        }
       } else {
         setStatus(true);
+        messagePopup("Please Enable Location Permision","We need Your Location to show Nearby Services, Please Enable it. To Continue","danger")
       }
     };
     getPermision();
@@ -86,7 +94,6 @@ const Auth = ({ navigation }) => {
     const match = url.url.match(regExp);
     if (match && auth === "Auth") {
       const waId = match[1];
-      // await getCurrentLocationWithLocality()
       const address = await getCurrentLocation();
       const coords = await getCurrentPostiton();
       verifyUser(waId, {
@@ -100,6 +107,7 @@ const Auth = ({ navigation }) => {
     }
   };
   useEffect(() => {
+    console.log(shouldNavigateUser);
     if (shouldNavigateUser) {
       navigation.replace("UserNavigation");
     } else if (shouldNavigateServiceProvider) {
@@ -122,28 +130,37 @@ const Auth = ({ navigation }) => {
           How is Your Day Today?
         </Text>
         <Seperator text="Log in or Sign up" />
-        {/* <Text className="text-white font-bold text-xl" >Continue with WhatsApp</Text> */}
-        <WhatsApp disabled={status} set={setAuth} setTO={"Auth"} />
+        {!enabled ? (
+          <WhatsApp disabled={status} set={setAuth} setTO={"Auth"} />
+        ) : (
+          <Button
+            func={() => {
+              verifyTest(123456789);
+            }}
+            text="Play Console 'Test' Login"
+          />
+        )}
         <Seperator text="*" />
-        <TouchableOpacity
-          disabled={status}
-          onPress={() => {
-            // navigation.navigate("_Profile")
-            refRBSheet.current.open();
-          }}
-          activeOpacity={0.5}
-          style={{
-            backgroundColor: main.bgColor,
-          }}
-          className={`w-50 h-5 rounded-xl mt-1 flex justify-center items-center my-[-10px]`}
-        >
-          <Text className="text-gray-500 font-black text-md">
-            Continue as Service Provider
-          </Text>
-        </TouchableOpacity>
+        {!enabled && (
+          <TouchableOpacity
+            disabled={status}
+            onPress={() => {
+              refRBSheet.current.open();
+            }}
+            activeOpacity={0.5}
+            style={{
+              backgroundColor: main.bgColor,
+            }}
+            className={`w-50 h-5 rounded-xl mt-1 flex justify-center items-center my-[-10px]`}
+          >
+            <Text className="text-gray-500 font-black text-md">
+              Continue as Service Provider
+            </Text>
+          </TouchableOpacity>
+        )}
         <View className="p-6">
           <Text className="text-center text-gray-400">
-            By Continue as User You are agreeing Our
+            By Continuing as User You are agreeing Our
           </Text>
           <Text className="text-center text-gray-400 font-black">
             Terms and Conditions

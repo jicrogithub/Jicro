@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import IP from '../../constants/IP';
 import axios from "axios"
 import { getData, setData } from "../../helper/LocalStorage"
+import { messagePopup } from '../../helper/Message';
 const url = IP.local
 const useAuth = create(
     (set) => ({
@@ -17,7 +18,6 @@ const useAuth = create(
                 long: data.long,
                 token
             }).then((e) => {
-                console.log(e.data.token)
                 setData("token", e.data.token)
                 setData("auth-user", "true")
                 set(() => ({
@@ -40,10 +40,7 @@ const useAuth = create(
                         shouldNavigateServiceProvider: true
                     }))
                 }).catch((e) => {
-                    
-                    set(() => ({
-                        isError: true
-                    }))
+                    messagePopup(e.response.data.error, "","danger")
                 })
             } else {
                 const token = await getData('fcm-token')
@@ -58,15 +55,28 @@ const useAuth = create(
                     coords: data.coords,
                     token
                 }).then((e) => {
+                    console.log(e.data)
                     setData("token", e.data.token)
                     setData("auth-service-provider", "true")
                     set(() => ({
                         shouldNavigateServiceProvider: true
                     }))
                 }).catch((e) => {
-                    
+                    messagePopup(e.response.data.error, "","danger")
+                    // console.log(e.response)
                 })
             }
+        },
+        verifyTest: async (test_num) => {
+            const data =  await axios.post(`${url}/auth-user`, {
+                test_num
+            })
+            setData("token", data.data.token)
+            setData("test-user", "true")
+            set(() => ({
+                shouldNavigateUser: true
+            }))
+
         }
     }));
 
