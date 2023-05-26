@@ -26,10 +26,12 @@ const Card = ({ images, title, price, ratings, provider, checkedCondition,servic
         </View>
       }
       <View style={main.shadows} className="bg-white rounded-xl w-50 h-[12rem] p-1 mb-2 flex flex-col justify-around" >
-        <Image
+        {
+          images[0] && <Image
           source={{ uri: images[0] }}
           className="w-50 h-40 rounded-xl"
         />
+        }
         <Text className="text-gray-700 text-[16px] font-black text-center my-1" >{title}</Text>
         <View className="h-26 flex flex-row justify-evenly items-center" >
           <View className="flex flex-row justify-center items-center gap-2 mb-1" >

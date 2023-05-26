@@ -41,25 +41,24 @@ const AddService = ({ navigation }) => {
   const notIncludedTextInputRef = useRef([]);
   const [count, setCount] = useState(0);
   const [imagesUploaded, setImagesUploaded] = useState(false);
-  const [check, setCheck] = useState(false)
-  useEffect(()=>{
-    if(check){
-      title("")
-      price("")
-      subCategory("")
-      category("")
-      note("")
-      images([])
-      notIncludedLists([])
-      includedLists([])
-      included(1)
-      notIncludedTextInputRef([])
-      includedTextInputRef([])
-      notIncluded(1)
-      count(0)
-      setImagesUploaded(false)
-    }
-  },[check])
+  const [check, setCheck] = useState(false);
+  // useEffect(() => {
+  //   if (check) {
+  //     setTitle("");
+  //     setPrice("");
+  //     setSubCategory("");
+  //     setNote("");
+  //     setImages([]);
+  //     setNotIncludedLists([]);
+  //     setIncludedLists([]);
+  //     setIncluded(1);
+  //     // includedTextInputRef([]);
+  //     // notIncludedTextInputRef([]);
+  //     setNotIncluded(1);
+  //     setCount(0);
+  //     setImagesUploaded(false);
+  //   }
+  // }, [check]);
   const handleTextInputBlur = useCallback((index, text, type) => {
     if (type === "included") {
       setIncludedLists((includedLists) => {
@@ -126,7 +125,7 @@ const AddService = ({ navigation }) => {
       setImagesUploaded(false);
     }
   }, [images]);
-  
+
   return (
     <View className="w-full h-full bg-white">
       <UniversalHeader />
@@ -207,7 +206,11 @@ const AddService = ({ navigation }) => {
           placeholderTextColor={"#464647"}
         />
         <SelectDropdown
-          data={SUB_CATEGORIES[data.profession].map(({ text }) => {
+          data={SUB_CATEGORIES[
+            data.profession.split(" ").length === 2
+              ? data.profession.split(" ").join("_")
+              : data.profession
+          ].map(({ text }) => {
             return text[0].toUpperCase() + text.slice(1);
           })}
           className="w-full"
@@ -374,37 +377,54 @@ const AddService = ({ navigation }) => {
           <Button
             func={() => {
               if (
-                (title !== "" &&
-                  price !== 0 &&
-                  images.length !== 0 &&
-                  includedLists.length !== 0 &&
-                  note &&
-                  imagesUploaded === true,
-                subCategory)
+                title !== "" &&
+                price !== 0 &&
+                // images.length !== 0 &&
+                includedLists.length !== 0 &&
+                note &&
+                // imagesUploaded === true,
+                subCategory
               ) {
-                setRedirect(true);
-                setCheck(true)
-                setData({
-                  title,
-                  price,
-                  images,
-                  includedLists,
-                  notIncludedLists,
-                  note,
-                  sub_category: subCategory,
-                  category: data.profession,
-                });
+                if (images.length !== 0 && imagesUploaded) {
+                  setRedirect(true);
+                  setCheck(true);
+                  setData({
+                    title,
+                    price,
+                    images: images,
+                    includedLists,
+                    notIncludedLists,
+                    note: note,
+                    sub_category: subCategory,
+                    category: data.profession,
+                  });
+                } else {
+                  setRedirect(true);
+                  setCheck(true);
+                  setData({
+                    title,
+                    price,
+                    images: images,
+                    includedLists,
+                    notIncludedLists,
+                    note: note,
+                    sub_category: subCategory,
+                    category: data.profession,
+                  });
+                }
                 // setImages([])
               } else {
-                imagesUploaded ? messagePopup(
-                  "Please Add All the Details",
-                  "Seems You Did'nt Added All The Details",
-                  "danger"
-                ) :  messagePopup(
-                  "Please wait for Images to Upload",
-                  "",
-                  "info"
-                )
+                imagesUploaded
+                  ? messagePopup(
+                      "Please Add All the Details",
+                      "Seems You Did'nt Added All The Details",
+                      "danger"
+                    )
+                  : messagePopup(
+                      "Please wait for Images to Upload",
+                      "",
+                      "info"
+                    );
               }
             }}
             text="Add"

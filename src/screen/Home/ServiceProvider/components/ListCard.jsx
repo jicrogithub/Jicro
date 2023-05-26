@@ -68,13 +68,15 @@ const ListCard = ({ images, title, price, service_id }) => {
     }, []);
     return (
         <>
-            <View style={main.shadows} className="bg-white rounded-xl w-50 h-72 p-1 mb-2 flex flex-col justify-around m-1" >
-                <Image
+            <View style={main.shadows} className="bg-white rounded-xl w-50 max-h-72 p-1 mb-2 flex flex-col justify-around m-1" >
+                {
+                    images[0] && <Image
                     source={{
                         uri: images[0]
                     }}
                     className="w-50 h-40 rounded-xl"
                 />
+                }
                 <Text className="text-gray-700 text-[16px] font-black text-center my-1" >{title}</Text>
                 <View className="h-26 flex flex-row justify-between items-center px-2" >
                     <View className="flex flex-row justify-between items-center" >

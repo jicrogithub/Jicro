@@ -27,6 +27,7 @@ const useAuth = create(
             })
         },
         verifyServiceProvider: async (waId, data) => {
+            console.log(data)
             if (data === undefined) {
                 const token = await getData('fcm-token')
                 await axios.post(`${url}/auth-service-provider`, {

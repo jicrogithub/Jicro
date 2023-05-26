@@ -91,7 +91,6 @@ const Preview = ({ navigation }) => {
                         included: data.includedLists,
                         notIncluded: data.notIncludedLists,
                         note: data.note,
-                        provider: "",
                         category:data.category,
                         sub_category:data.sub_category
                     })

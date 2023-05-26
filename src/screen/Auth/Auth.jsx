@@ -53,7 +53,11 @@ const Auth = ({ navigation }) => {
         }
       } else {
         setStatus(true);
-        messagePopup("Please Enable Location Permision","We need Your Location to show Nearby Services, Please Enable it. To Continue","danger")
+        messagePopup(
+          "Please Enable Location Permision",
+          "We need Your Location to show Nearby Services, Please Enable it. To Continue",
+          "danger"
+        );
       }
     };
     getPermision();
@@ -107,7 +111,6 @@ const Auth = ({ navigation }) => {
     }
   };
   useEffect(() => {
-    console.log(shouldNavigateUser);
     if (shouldNavigateUser) {
       navigation.replace("UserNavigation");
     } else if (shouldNavigateServiceProvider) {
@@ -153,7 +156,7 @@ const Auth = ({ navigation }) => {
             }}
             className={`w-50 h-5 rounded-xl mt-1 flex justify-center items-center my-[-10px]`}
           >
-            <Text className="text-gray-500 font-black text-md">
+            <Text className="text-gray-500 font-black text-lg">
               Continue as Service Provider
             </Text>
           </TouchableOpacity>

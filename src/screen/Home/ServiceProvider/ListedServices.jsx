@@ -24,7 +24,7 @@ const ListedServices = ({navigation}) => {
               return (
                 <ListCard
                   images={images}
-                  price={100}
+                  price={price.actual}
                   title={title}
                   included={included}
                   notIncluded={notIncluded}
